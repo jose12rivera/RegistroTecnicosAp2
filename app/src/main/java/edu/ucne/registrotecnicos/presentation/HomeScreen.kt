@@ -49,13 +49,13 @@ fun HomeScreen(
         ) {
 
             Image(
-                painter = painterResource(id = R.drawable.icont),
+                painter = painterResource(id = R.drawable.ponicon),
                 contentDescription = "Imagen",
                 modifier = Modifier.size(40.dp)
             )
 
             Text(
-                text = "TecnoApp",
+                text = "TecnicoApp",
                 color = Color.White,
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
@@ -75,9 +75,9 @@ fun HomeScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                OptionCard("Técnicos", R.drawable.tecnicos, goToTecnico)
+                OptionCard("Técnicos", R.drawable.icotec, goToTecnico)
 
-                OptionCard("Tickets", R.drawable.tickets, goToTickets)
+                OptionCard("Tickets", R.drawable.tic, goToTickets)
             }
 
 

@@ -94,7 +94,7 @@ fun TicketListBodyScreen(
                 navigationIcon = {
                     IconButton(onClick = { scope.launch { drawerState.open() } }) {
                         Image(
-                            painter = painterResource(id = R.drawable.tickets),
+                            painter = painterResource(id = R.drawable.ticketsss),
                             contentDescription = "Ir al menú",
                             modifier = Modifier.size(24.dp)
                         )

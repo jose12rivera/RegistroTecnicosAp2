@@ -26,7 +26,6 @@ import edu.ucne.registrotecnicos.presentation.ticket.TicketListScreen
 import edu.ucne.registrotecnicos.presentation.ticket.TicketScreen
 
 
-@SuppressLint("ComposableNaming")
 @Composable
 fun registro_tecnicos_tickets(tecnicoDb: TecnicoDb, navHostController: NavHostController) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -45,7 +44,6 @@ fun registro_tecnicos_tickets(tecnicoDb: TecnicoDb, navHostController: NavHostCo
         )
 
     val scope = rememberCoroutineScope()
-    val tecnicoRepository = TecnicoRepository(tecnicoDb)
     NavHost(
         navController = navHostController,
         startDestination = Screen.HomeScreen
@@ -61,6 +59,7 @@ fun registro_tecnicos_tickets(tecnicoDb: TecnicoDb, navHostController: NavHostCo
             )
         }
 
+
         composable<Screen.TecnicoList> {
             TecnicoListScreen(
                 drawerState = drawerState,
@@ -68,42 +67,35 @@ fun registro_tecnicos_tickets(tecnicoDb: TecnicoDb, navHostController: NavHostCo
                 createTecnico = {
                     navHostController.navigate(Screen.Tecnico(0))
                 },
-                onEditTecnico = { tecnico ->
-                    navHostController.navigate(Screen.EditTecnico(tecnico))
+                onEditTecnico = { tecnicoId ->
+                    navHostController.navigate(Screen.EditTecnico(tecnicoId))
                 },
-                onDeleteTecnico = { tecnico ->
-                    navHostController.navigate(Screen.DeleteTecnico(tecnico))
+                onDeleteTecnico = { tecnicoId ->
+                    navHostController.navigate(Screen.DeleteTecnico(tecnicoId))
                 }
             )
         }
 
-
-        composable<Screen.Tecnico> {
-            val args = it.toRoute<Screen.Tecnico>()
+        composable<Screen.Tecnico> { backStackEntry ->
+            val args = backStackEntry.toRoute<Screen.Tecnico>()
             TecnicoScreen(
-                goBack = {
-                    navHostController.navigateUp()
-                }
+                goBack = { navHostController.popBackStack() }
             )
         }
 
-        composable<Screen.EditTecnico> {
-            val args = it.toRoute<Screen.EditTecnico>()
+        composable<Screen.EditTecnico> { backStackEntry ->
+            val args = backStackEntry.toRoute<Screen.EditTecnico>()
             EditTecnicoScreen(
                 tecnicoId = args.tecnicoId,
-                goBack = {
-                    navHostController.navigateUp()
-                }
+                goBack = { navHostController.popBackStack() }
             )
         }
 
-        composable<Screen.DeleteTecnico> {
-            val args = it.toRoute<Screen.DeleteTecnico>()
+        composable<Screen.DeleteTecnico> { backStackEntry ->
+            val args = backStackEntry.toRoute<Screen.DeleteTecnico>()
             DeleteTecnicoScreen(
                 tecnicoId = args.tecnicoId,
-                goBack = {
-                    navHostController.navigateUp()
-                }
+                goBack = { navHostController.popBackStack() }
             )
         }
 
