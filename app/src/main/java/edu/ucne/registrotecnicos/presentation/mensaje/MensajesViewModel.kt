@@ -24,7 +24,9 @@ class MensajesViewModel @Inject constructor(
 
     init {
         loadMensajes()
+        loadTecnicos()
     }
+
 
     private fun loadMensajes() {
         viewModelScope.launch {
@@ -92,6 +94,7 @@ data class UiState(
     val tecnicos: List<TecnicoEntity> = emptyList(),
     val descripcion: String = "",
     val tecnicoId: String? = null,
+    val tecnicoSeleccionado: Int? = null, // Nuevo campo
     val successMessage: String? = null,
     val errorMessage: String? = null,
     val fecha: Long = System.currentTimeMillis()

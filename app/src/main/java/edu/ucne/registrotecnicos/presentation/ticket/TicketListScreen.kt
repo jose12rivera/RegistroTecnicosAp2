@@ -29,6 +29,7 @@ import edu.ucne.registrotecnicos.data.local.entity.TicketEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.filled.MailOutline
 
 
 @Composable
@@ -153,21 +154,23 @@ fun TicketListBodyScreen(
                         ticket = ticket,
                         tecnicoList = tecnicoList,
                         onEditTicket = onEditTicket,
-                        onDeleteTicket = onDeleteTicket
+                        onDeleteTicket = onDeleteTicket,
+                        onMessageTicket = { /* lógica para enviar mensaje */ }
                     )
+
                 }
             }
         }
     }
 }
 
-
 @Composable
 fun TicketRow(
     ticket: TicketEntity,
     tecnicoList: List<TecnicoEntity>,
     onEditTicket: (TicketEntity) -> Unit,
-    onDeleteTicket: (TicketEntity) -> Unit
+    onDeleteTicket: (TicketEntity) -> Unit,
+    onMessageTicket: (TicketEntity) -> Unit // Nuevo parámetro para mensaje
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -250,6 +253,14 @@ fun TicketRow(
                 modifier = Modifier.background(MaterialTheme.colorScheme.surface),
                 offset = DpOffset(x = (220).dp, y = 0.dp)
             ) {
+                DropdownMenuItem(
+                    text = { Text("Mensaje") },
+                    leadingIcon = { Icon(Icons.Filled.MailOutline, contentDescription = "Mensaje") },
+                    onClick = {
+                        onMessageTicket(ticket)
+                        expanded = false
+                    }
+                )
                 DropdownMenuItem(
                     text = { Text("Editar") },
                     leadingIcon = { Icon(Icons.Filled.Edit, contentDescription = "Editar") },

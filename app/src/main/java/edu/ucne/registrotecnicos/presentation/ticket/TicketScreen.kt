@@ -168,24 +168,24 @@ fun TicketBodyScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            OutlinedButton(
-                modifier = Modifier.fillMaxWidth(),
-                onClick = goToMensajeScreen
-            ) {
-                Text(text = "Enviar Mensajes")
-                Icon(Icons.Filled.Email, contentDescription = "Enviar Mensajes")
-            }
-
-            uiState.mensajeError?.let { message ->
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = message,
-                    color = Color.Red,
-                    style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold)
-                )
-            }
+//            Spacer(modifier = Modifier.height(16.dp))
+//
+//            OutlinedButton(
+//                modifier = Modifier.fillMaxWidth(),
+//                onClick = goToMensajeScreen
+//            ) {
+//                Text(text = "Enviar Mensajes")
+//                Icon(Icons.Filled.Email, contentDescription = "Enviar Mensajes")
+//            }
+//
+//            uiState.mensajeError?.let { message ->
+//                Spacer(modifier = Modifier.height(8.dp))
+//                Text(
+//                    text = message,
+//                    color = Color.Red,
+//                    style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold)
+//                )
+//            }
         }
     }
 }
