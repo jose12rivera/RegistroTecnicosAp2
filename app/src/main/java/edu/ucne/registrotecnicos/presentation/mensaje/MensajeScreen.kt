@@ -15,33 +15,40 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import edu.ucne.registrotecnicos.data.local.entity.MensajeEntity
 import edu.ucne.registrotecnicos.data.local.entity.TecnicoEntity
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import java.util.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MensajeScreen(viewModel: MensajesViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState.collectAsState()
     var tecnicoId by remember { mutableStateOf(uiState.tecnicoId ?: "") }
+    var rol by remember { mutableStateOf("Owner") }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        if (uiState.mensajes.isEmpty()) {
-            Text("No hay mensajes disponibles.")
-        } else {
-            LazyColumn(
-                modifier = Modifier.weight(1f)
-            ) {
-                items(uiState.mensajes) { mensaje ->
-                    MensajeCard(mensaje, uiState.tecnicos)
-                }
+        Text("Ticket #077620", style = MaterialTheme.typography.titleMedium)
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            reverseLayout = true
+        ) {
+            items(uiState.mensajes.reversed()) { mensaje ->
+                MensajeCard(mensaje, uiState.tecnicos)
             }
         }
 
         Spacer(modifier = Modifier.height(16.dp))
+
+        RolSelector(rol = rol, onRolChange = { rol = it })
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = tecnicoId,
@@ -54,24 +61,24 @@ fun MensajeScreen(viewModel: MensajesViewModel = hiltViewModel()) {
             singleLine = true
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = uiState.descripcion,
             onValueChange = { viewModel.onDescripcionChange(it) },
-            label = { Text("Descripción del Mensaje") },
+            label = { Text("Mensaje") },
             modifier = Modifier.fillMaxWidth(),
             maxLines = 3
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         Text(
             "Fecha: ${SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date(uiState.fecha))}",
-            style = MaterialTheme.typography.bodyMedium
+            style = MaterialTheme.typography.bodySmall
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         Button(
             onClick = { viewModel.saveMensaje() },
@@ -80,70 +87,91 @@ fun MensajeScreen(viewModel: MensajesViewModel = hiltViewModel()) {
             Text("Guardar Mensaje")
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         uiState.successMessage?.let {
-            Text(text = it, color = Color(0xFF2E7D32)) // Verde oscuro
+            Text(text = it, color = Color(0xFF2E7D32))
         }
 
         uiState.errorMessage?.let {
-            Text(text = it, color = Color(0xFFC62828)) // Rojo oscuro
+            Text(text = it, color = Color(0xFFC62828))
         }
+    }
+}
+
+@Composable
+fun RolSelector(rol: String, onRolChange: (String) -> Unit) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        RadioButton(
+            selected = rol == "Operator",
+            onClick = { onRolChange("Operator") }
+        )
+        Text("Operator")
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        RadioButton(
+            selected = rol == "Owner",
+            onClick = { onRolChange("Owner") }
+        )
+        Text("Owner")
     }
 }
 
 @Composable
 fun MensajeCard(mensaje: MensajeEntity, tecnicos: List<TecnicoEntity>) {
     val tecnico = tecnicos.find { it.tecnicoId == mensaje.tecnicoId }
+    val isOperator = tecnico?.nombres == "Sandeep" // Lógica temporal: usa tu lógica real aquí
+    val chipColor = if (isOperator) Color(0xFF1976D2) else Color(0xFF2E7D32)
+    val chipText = if (isOperator) "Operator" else "Owner"
+    val alignment = if (isOperator) Alignment.End else Alignment.Start
+    val backgroundColor = if (isOperator) Color(0xFFE3F2FD) else Color(0xFFE8F5E9)
 
-    Column(modifier = Modifier.padding(horizontal = 4.dp)) {
-        Text(
-            text = "Mensaje enviado por: ${tecnico?.nombres ?: "Desconocido"} el ${SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(mensaje.fecha)}",
-            style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
-            modifier = Modifier.padding(bottom = 4.dp)
-        )
-    }
-
-    Card(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
-        elevation = CardDefaults.cardElevation(6.dp)
+            .padding(vertical = 4.dp),
+        horizontalAlignment = alignment
     ) {
-        Box(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .widthIn(max = 300.dp)
+                .background(backgroundColor, shape = MaterialTheme.shapes.medium)
+                .padding(12.dp)
         ) {
-            Column(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth()
-            ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "Descripción: ${mensaje.descripcion}",
-                    style = MaterialTheme.typography.bodyMedium
+                    text = "By ${tecnico?.nombres ?: "Desconocido"}",
+                    style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold)
                 )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Text(
-                    text = "Fecha: ${SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(mensaje.fecha)}",
-                    style = MaterialTheme.typography.bodySmall
-                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Box(
+                    modifier = Modifier
+                        .background(chipColor, shape = MaterialTheme.shapes.small)
+                        .padding(horizontal = 6.dp, vertical = 2.dp)
+                ) {
+                    Text(
+                        text = chipText,
+                        color = Color.White,
+                        style = MaterialTheme.typography.bodySmall
+                    )
+                }
             }
 
-            Box(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .background(Color.Blue)
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
-            ) {
-                Text(
-                    text = "Técnico",
-                    color = Color.White,
-                    style = MaterialTheme.typography.bodySmall
-                )
-            }
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = mensaje.descripcion,
+                style = MaterialTheme.typography.bodyMedium
+            )
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            Text(
+                text = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(mensaje.fecha),
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.Gray
+            )
         }
     }
 }
