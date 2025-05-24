@@ -1,5 +1,3 @@
-package edu.ucne.registrotecnicos.presentation.ticket
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -25,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import edu.ucne.registrotecnicos.presentation.ticket.TicketViewModel
 
 @Composable
 fun DeleteTicketScreen(

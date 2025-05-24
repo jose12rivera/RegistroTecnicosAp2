@@ -1,6 +1,7 @@
 package edu.ucne.registrotecnicos.presentation.navigation
 
-import android.annotation.SuppressLint
+import DeleteTicketScreen
+import EditTicketScreen
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -13,15 +14,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
 import edu.ucne.registrotecnicos.data.local.database.TecnicoDb
-import edu.ucne.registrotecnicos.data.repository.TecnicoRepository
 import edu.ucne.registrotecnicos.presentation.HomeScreen
 import edu.ucne.registrotecnicos.presentation.mensaje.MensajeScreen
 import edu.ucne.registrotecnicos.presentation.tecnico.DeleteTecnicoScreen
 import edu.ucne.registrotecnicos.presentation.tecnico.EditTecnicoScreen
 import edu.ucne.registrotecnicos.presentation.tecnico.TecnicoListScreen
 import edu.ucne.registrotecnicos.presentation.tecnico.TecnicoScreen
-import edu.ucne.registrotecnicos.presentation.ticket.DeleteTicketScreen
-import edu.ucne.registrotecnicos.presentation.ticket.EditTicketScreen
 import edu.ucne.registrotecnicos.presentation.ticket.TicketListScreen
 import edu.ucne.registrotecnicos.presentation.ticket.TicketScreen
 

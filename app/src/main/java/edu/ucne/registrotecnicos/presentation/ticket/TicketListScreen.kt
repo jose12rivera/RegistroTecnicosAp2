@@ -28,8 +28,8 @@ import edu.ucne.registrotecnicos.data.local.entity.TecnicoEntity
 import edu.ucne.registrotecnicos.data.local.entity.TicketEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import kotlin.collections.filter
 import androidx.compose.foundation.lazy.items
+
 
 @Composable
 fun TicketListScreen(
@@ -94,7 +94,7 @@ fun TicketListBodyScreen(
                 navigationIcon = {
                     IconButton(onClick = { scope.launch { drawerState.open() } }) {
                         Image(
-                            painter = painterResource(id = R.drawable.ticketsss),
+                            painter = painterResource(id = R.drawable.tic),
                             contentDescription = "Ir al menú",
                             modifier = Modifier.size(24.dp)
                         )
@@ -138,8 +138,7 @@ fun TicketListBodyScreen(
                     unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
                     focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
                     unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-                )
-                ,
+                ),
                 leadingIcon = {
                     Icon(Icons.Filled.Search, contentDescription = "Buscar")
                 }

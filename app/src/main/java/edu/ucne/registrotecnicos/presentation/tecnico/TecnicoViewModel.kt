@@ -61,7 +61,7 @@ class TecnicoViewModel @Inject constructor(
     // En TecnicoViewModel.kt
     fun selectTecnico(tecnicoId: Int) {
         viewModelScope.launch {
-            if (tecnicoId > 0) { // Solo buscar si es un ID válido
+            if (tecnicoId != 0) { // Solo buscar si es un ID válido
                 val tecnico = tecnicoRepository.find(tecnicoId)
                 _uiState.update {
                     it.copy(

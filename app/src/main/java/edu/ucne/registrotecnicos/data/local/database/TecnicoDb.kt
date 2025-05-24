@@ -16,7 +16,7 @@ import edu.ucne.registrotecnicos.data.local.entity.TicketEntity
         TicketEntity::class,
         MensajeEntity::class
     ],
-    version = 3,
+    version = 12,
     exportSchema = false
 )
 @TypeConverters(Converters::class)
