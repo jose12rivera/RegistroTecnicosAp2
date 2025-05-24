@@ -83,7 +83,7 @@ fun TecnicoListBodyScreen(
                 navigationIcon = {
                     IconButton(onClick = { scope.launch { drawerState.open() } }) {
                         Image(
-                            painter = painterResource(id = R.drawable.tecnicos1),
+                            painter = painterResource(id = R.drawable.tic),
                             contentDescription = "Ir al menú",
                             modifier = Modifier.size(24.dp)
                         )

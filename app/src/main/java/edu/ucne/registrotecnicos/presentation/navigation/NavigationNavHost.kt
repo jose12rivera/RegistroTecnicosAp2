@@ -99,6 +99,7 @@ fun registro_tecnicos_tickets(tecnicoDb: TecnicoDb, navHostController: NavHostCo
             )
         }
 
+
         composable<Screen.TicketList> {
             TicketListScreen(
                 drawerState = drawerState,
@@ -147,6 +148,7 @@ fun registro_tecnicos_tickets(tecnicoDb: TecnicoDb, navHostController: NavHostCo
                 }
             )
         }
+
 
     }
 }
