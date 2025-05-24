@@ -1,4 +1,6 @@
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -74,31 +77,41 @@ fun EditTicketBodyScreen(
 ) {
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = "Editar Ticket",
-                        style = TextStyle(
-                            fontSize = 22.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
+            // Usamos Box para aplicar el fondo con degradado
+            Box(
+                modifier = Modifier
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(Color(0xFF0D47A1), Color(0xFF1976D2)) // Azul oscuro a azul medio
                         )
                     )
-                },
-                navigationIcon = {
-                    IconButton(onClick = goBack) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Volver")
-                    }
-                },
-                actions = {
-                    IconButton(onClick = save) {
-                        Icon(Icons.Filled.Check, contentDescription = "Guardar")
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color(0xFF6200EE)
+            ) {
+                CenterAlignedTopAppBar(
+                    title = {
+                        Text(
+                            text = "Editar Ticket",
+                            style = TextStyle(
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = goBack) {
+                            Icon(Icons.Filled.ArrowBack, contentDescription = "Volver", tint = Color.White)
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = save) {
+                            Icon(Icons.Filled.Check, contentDescription = "Guardar", tint = Color.White)
+                        }
+                    },
+                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = Color.Transparent // Para que no tape el fondo con degradado
+                    )
                 )
-            )
+            }
         }
     ) { paddingValues ->
         Column(
@@ -157,7 +170,6 @@ fun EditTicketBodyScreen(
             )
             Spacer(modifier = Modifier.height(8.dp))
 
-            // For mensajeError
             if (!uiState.mensajeError.isNullOrEmpty()) {
                 Text(
                     text = uiState.mensajeError ?: "",
@@ -168,7 +180,6 @@ fun EditTicketBodyScreen(
                 Spacer(modifier = Modifier.height(8.dp))
             }
 
-// For mensajeExito
             if (!uiState.mensajeExito.isNullOrEmpty()) {
                 Text(
                     text = uiState.mensajeExito ?: "",
@@ -178,7 +189,6 @@ fun EditTicketBodyScreen(
                 )
                 Spacer(modifier = Modifier.height(8.dp))
             }
-
 
             Row(
                 modifier = Modifier.fillMaxWidth(),

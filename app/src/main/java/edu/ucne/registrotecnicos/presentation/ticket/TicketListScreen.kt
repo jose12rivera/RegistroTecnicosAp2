@@ -214,7 +214,11 @@ fun TicketRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
-                .background(MaterialTheme.colorScheme.surfaceVariant),
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(Color(0xFF0D47A1), Color(0xFF1976D2))
+                    )
+                ),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column(
