@@ -1,20 +1,29 @@
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -42,7 +51,6 @@ fun DeleteTicketScreen(
         goBack = goBack
     )
 }
-
 @Composable
 fun DeleteTicketBodyScreen(
     uiState: TicketViewModel.UiState,
@@ -65,6 +73,7 @@ fun DeleteTicketBodyScreen(
             )
         }
     ) { paddingValues ->
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -72,6 +81,7 @@ fun DeleteTicketBodyScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.Center
         ) {
+
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -81,7 +91,12 @@ fun DeleteTicketBodyScreen(
             ) {
                 Column(
                     modifier = Modifier
-                        .padding(16.dp)
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(Color(0xFF0D47A1), Color(0xFF1976D2))
+                            )
+                        )
+                        .padding(16.dp)  // padding dentro del fondo para el contenido
                 ) {
                     Text(
                         text = "Fecha: ${uiState.fecha ?: "No disponible"}",
@@ -135,24 +150,30 @@ fun DeleteTicketBodyScreen(
                 }
             }
 
+
             Spacer(modifier = Modifier.height(16.dp))
 
-            Button(
-                onClick = {
-                    onDeleteTicket()
-                },
-                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                Text(text = "Eliminar")
-            }
+                OutlinedButton(
+                    modifier = Modifier.weight(1f),
+                    onClick = { onDeleteTicket() }
+                ) {
+                    Icon(Icons.Filled.Edit, contentDescription = "Eliminar")
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(text = "Eliminar")
+                }
 
-            Button(
-                onClick = {
-                    goBack()
-                },
-                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
-            ) {
-                Text(text = "Cancelar")
+                OutlinedButton(
+                    modifier = Modifier.weight(1f),
+                    onClick = { goBack() }
+                ) {
+                    Icon(Icons.Filled.Close, contentDescription = "Cancelar")
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(text = "Cancelar")
+                }
             }
         }
     }

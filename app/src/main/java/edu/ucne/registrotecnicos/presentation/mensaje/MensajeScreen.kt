@@ -4,10 +4,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -29,7 +32,6 @@ fun MensajeScreen(viewModel: MensajesViewModel = hiltViewModel()) {
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text("Ticket #077620", style = MaterialTheme.typography.titleMedium)
 
         Spacer(modifier = Modifier.height(12.dp))
 
@@ -80,14 +82,17 @@ fun MensajeScreen(viewModel: MensajesViewModel = hiltViewModel()) {
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        Button(
+
+        OutlinedButton(
             onClick = { viewModel.saveMensaje() },
             modifier = Modifier.fillMaxWidth()
         ) {
+            Icon(Icons.Filled.Edit, contentDescription = "Guardar")
+            Spacer(modifier = Modifier.width(8.dp))
             Text("Guardar Mensaje")
-        }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        }
+            Spacer(modifier = Modifier.height(8.dp))
 
         uiState.successMessage?.let {
             Text(text = it, color = Color(0xFF2E7D32))
@@ -125,7 +130,14 @@ fun MensajeCard(mensaje: MensajeEntity, tecnicos: List<TecnicoEntity>) {
     val chipColor = if (isOperator) Color(0xFF1976D2) else Color(0xFF2E7D32)
     val chipText = if (isOperator) "Operator" else "Owner"
     val alignment = if (isOperator) Alignment.End else Alignment.Start
-    val backgroundColor = if (isOperator) Color(0xFFE3F2FD) else Color(0xFFE8F5E9)
+
+    val backgroundBrush = if (isOperator) {
+        Brush.verticalGradient(
+            colors = listOf(Color(0xFF0D47A1), Color(0xFF1976D2)) // Azul oscuro a azul medio
+        )
+    } else {
+        null
+    }
 
     Column(
         modifier = Modifier
@@ -136,7 +148,12 @@ fun MensajeCard(mensaje: MensajeEntity, tecnicos: List<TecnicoEntity>) {
         Column(
             modifier = Modifier
                 .widthIn(max = 300.dp)
-                .background(backgroundColor, shape = MaterialTheme.shapes.medium)
+                .background(
+                    brush = backgroundBrush ?: Brush.verticalGradient(
+                        colors = listOf(Color(0xFFE8F5E9), Color(0xFFE8F5E9)) // Mantener fondo verde claro para Owner
+                    ),
+                    shape = MaterialTheme.shapes.medium
+                )
                 .padding(12.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {

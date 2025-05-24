@@ -137,12 +137,13 @@ fun TicketListBodyScreen(
             FloatingActionButton(
                 onClick = createTicket,
                 modifier = Modifier.padding(16.dp),
-                containerColor = MaterialTheme.colorScheme.primary,
+                containerColor = Color(0xFF4CAF50),  // Verde
                 contentColor = Color.White
             ) {
                 Icon(Icons.Filled.Add, contentDescription = "Añadir Ticket")
             }
         }
+
     ) { paddingValues ->
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
