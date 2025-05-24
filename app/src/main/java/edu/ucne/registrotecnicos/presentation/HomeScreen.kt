@@ -35,9 +35,10 @@ fun HomeScreen(
             .fillMaxSize()
             .background(
                 brush = Brush.verticalGradient(
-                    colors = listOf(Color(0xFF6A1B9A), Color.Black)
+                    colors = listOf(Color(0xFF0D47A1), Color(0xFF1976D2)) // Azul oscuro a azul medio
                 )
             )
+
             .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -101,11 +102,12 @@ fun OptionCard(title: String, imageResId: Int, onClick: () -> Unit) {
         Card(
             modifier = Modifier.fillMaxSize(),
             colors = CardDefaults.cardColors(
-                containerColor = Color(0xFF6A1B9A)
+                containerColor = Color.Red
             ),
             elevation = CardDefaults.cardElevation(8.dp),
             shape = RoundedCornerShape(12.dp)
-        ) {
+        )
+        {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
