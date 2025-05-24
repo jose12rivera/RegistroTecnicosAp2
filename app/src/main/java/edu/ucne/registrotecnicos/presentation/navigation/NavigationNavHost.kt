@@ -10,8 +10,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import androidx.navigation.toRoute
 import edu.ucne.registrotecnicos.data.local.database.TecnicoDb
 import edu.ucne.registrotecnicos.presentation.HomeScreen
@@ -102,6 +104,7 @@ fun registro_tecnicos_tickets(tecnicoDb: TecnicoDb, navHostController: NavHostCo
             TicketListScreen(
                 drawerState = drawerState,
                 scope = scope,
+                navController = navHostController, // Añade el navController
                 createTicket = {
                     navHostController.navigate(Screen.Ticket(0))
                 },
@@ -114,6 +117,17 @@ fun registro_tecnicos_tickets(tecnicoDb: TecnicoDb, navHostController: NavHostCo
             )
         }
 
+        // Añade esta ruta en tu NavHost
+        composable(
+            route = "mensaje/{tecnicoId}",
+            arguments = listOf(navArgument("tecnicoId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val tecnicoId = backStackEntry.arguments?.getInt("tecnicoId") ?: 0
+            MensajeScreen(
+//                tecnicoId = tecnicoId,
+//                goBack = { navHostController.popBackStack() }
+            )
+        }
         composable<Screen.Ticket> {
             val args = it.toRoute<Screen.Ticket>()
             TicketScreen(

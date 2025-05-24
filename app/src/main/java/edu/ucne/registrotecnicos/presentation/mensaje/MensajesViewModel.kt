@@ -16,7 +16,7 @@ import javax.inject.Inject
 @HiltViewModel
 class MensajesViewModel @Inject constructor(
     private val mensajeRepository: MensajeRepository,
-    private val tecnicoRepository: TecnicoRepository
+    private val tecnicoRepository: TecnicoRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(UiState())
@@ -26,7 +26,6 @@ class MensajesViewModel @Inject constructor(
         loadMensajes()
         loadTecnicos()
     }
-
 
     private fun loadMensajes() {
         viewModelScope.launch {
@@ -48,32 +47,28 @@ class MensajesViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(descripcion = newDescripcion)
     }
 
-    fun onTecnicoIdChange(newTecnicoId: String) {
+    fun onTecnicoIdChange(newTecnicoId: String?) {
         _uiState.value = _uiState.value.copy(tecnicoId = newTecnicoId)
     }
 
     fun saveMensaje() {
         val currentState = _uiState.value
-        if (currentState.tecnicoId != null && currentState.descripcion.isNotEmpty()) {
+        if (!currentState.tecnicoId.isNullOrEmpty() && currentState.descripcion.isNotEmpty()) {
             val tecnicoIdInt = currentState.tecnicoId.toIntOrNull()
-
             if (tecnicoIdInt != null) {
-                val fecha = currentState.fecha
-
                 val nuevoMensaje = MensajeEntity(
                     tecnicoId = tecnicoIdInt,
                     descripcion = currentState.descripcion,
                     fecha = Date(currentState.fecha)
-
                 )
-
                 viewModelScope.launch {
                     mensajeRepository.saveMensaje(nuevoMensaje)
                     _uiState.value = _uiState.value.copy(
                         successMessage = "Mensaje guardado con éxito",
                         descripcion = "",
                         tecnicoId = null,
-                        fecha = System.currentTimeMillis()
+                        fecha = System.currentTimeMillis(),
+                        errorMessage = null
                     )
                 }
             } else {
@@ -85,7 +80,13 @@ class MensajesViewModel @Inject constructor(
     }
 
     fun nuevoMensaje() {
-        _uiState.value = _uiState.value.copy(descripcion = "", tecnicoId = null, fecha = System.currentTimeMillis())
+        _uiState.value = _uiState.value.copy(
+            descripcion = "",
+            tecnicoId = null,
+            fecha = System.currentTimeMillis(),
+            successMessage = null,
+            errorMessage = null
+        )
     }
 }
 
@@ -94,7 +95,7 @@ data class UiState(
     val tecnicos: List<TecnicoEntity> = emptyList(),
     val descripcion: String = "",
     val tecnicoId: String? = null,
-    val tecnicoSeleccionado: Int? = null, // Nuevo campo
+    val tecnicoSeleccionado: Int? = null, // Campo para el técnico seleccionado
     val successMessage: String? = null,
     val errorMessage: String? = null,
     val fecha: Long = System.currentTimeMillis()

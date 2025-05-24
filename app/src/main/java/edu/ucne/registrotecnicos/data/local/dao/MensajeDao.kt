@@ -25,4 +25,5 @@ interface MensajeDao {
 
     @Query("SELECT * FROM Mensajes")
     fun getAll(): Flow<List<MensajeEntity>>
+
 }

@@ -22,7 +22,7 @@ import java.util.Locale
 @Composable
 fun MensajeScreen(viewModel: MensajesViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState.collectAsState()
-    var tecnicoId by remember { mutableStateOf<String>("") }
+    var tecnicoId by remember { mutableStateOf(uiState.tecnicoId ?: "") }
 
     Column(
         modifier = Modifier
@@ -50,7 +50,8 @@ fun MensajeScreen(viewModel: MensajesViewModel = hiltViewModel()) {
                 viewModel.onTecnicoIdChange(it)
             },
             label = { Text("Técnico ID") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -59,12 +60,16 @@ fun MensajeScreen(viewModel: MensajesViewModel = hiltViewModel()) {
             value = uiState.descripcion,
             onValueChange = { viewModel.onDescripcionChange(it) },
             label = { Text("Descripción del Mensaje") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            maxLines = 3
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text("Fecha: ${SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date(uiState.fecha))}")
+        Text(
+            "Fecha: ${SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date(uiState.fecha))}",
+            style = MaterialTheme.typography.bodyMedium
+        )
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -78,14 +83,14 @@ fun MensajeScreen(viewModel: MensajesViewModel = hiltViewModel()) {
         Spacer(modifier = Modifier.height(16.dp))
 
         uiState.successMessage?.let {
-            Text(text = it, color = Color.Green)
+            Text(text = it, color = Color(0xFF2E7D32)) // Verde oscuro
         }
+
         uiState.errorMessage?.let {
-            Text(text = it, color = Color.Red)
+            Text(text = it, color = Color(0xFFC62828)) // Rojo oscuro
         }
     }
 }
-
 
 @Composable
 fun MensajeCard(mensaje: MensajeEntity, tecnicos: List<TecnicoEntity>) {
@@ -93,8 +98,9 @@ fun MensajeCard(mensaje: MensajeEntity, tecnicos: List<TecnicoEntity>) {
 
     Column(modifier = Modifier.padding(horizontal = 4.dp)) {
         Text(
-            text = "Mensaje enviado por Técnico en ${SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(mensaje.fecha)}",
-            style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold)
+            text = "Mensaje enviado por: ${tecnico?.nombres ?: "Desconocido"} el ${SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(mensaje.fecha)}",
+            style = MaterialTheme.typography.bodySmall.copy(fontWeight = FontWeight.Bold),
+            modifier = Modifier.padding(bottom = 4.dp)
         )
     }
 
@@ -115,8 +121,10 @@ fun MensajeCard(mensaje: MensajeEntity, tecnicos: List<TecnicoEntity>) {
             ) {
                 Text(
                     text = "Descripción: ${mensaje.descripcion}",
-                    style = MaterialTheme.typography.bodySmall
+                    style = MaterialTheme.typography.bodyMedium
                 )
+
+                Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
                     text = "Fecha: ${SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(mensaje.fecha)}",

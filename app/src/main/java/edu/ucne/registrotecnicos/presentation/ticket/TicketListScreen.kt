@@ -4,10 +4,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.MailOutline
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
@@ -23,19 +25,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavController
 import edu.ucne.registrotecnicos.R
 import edu.ucne.registrotecnicos.data.local.entity.TecnicoEntity
 import edu.ucne.registrotecnicos.data.local.entity.TicketEntity
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.filled.MailOutline
-
 
 @Composable
 fun TicketListScreen(
     drawerState: DrawerState,
     scope: CoroutineScope,
+    navController: NavController,  // Recibe NavController para navegación
     viewModel: TicketViewModel = hiltViewModel(),
     createTicket: () -> Unit,
     onEditTicket: (TicketEntity) -> Unit,
@@ -61,7 +62,11 @@ fun TicketListScreen(
         tecnicoList = tecnicoList,
         searchQuery = searchQuery,
         onSearchQueryChange = { searchQuery = it },
-        filteredTickets = filteredTickets
+        filteredTickets = filteredTickets,
+        onMessageTicket = { ticket ->
+            // Navegar a la pantalla de mensajes con el ID del técnico
+            navController.navigate("mensaje/${ticket.tecnicoId}")
+        }
     )
 }
 
@@ -77,7 +82,8 @@ fun TicketListBodyScreen(
     tecnicoList: List<TecnicoEntity>,
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
-    filteredTickets: List<TicketEntity>
+    filteredTickets: List<TicketEntity>,
+    onMessageTicket: (TicketEntity) -> Unit // Parámetro para manejar mensajes
 ) {
     Scaffold(
         topBar = {
@@ -155,9 +161,8 @@ fun TicketListBodyScreen(
                         tecnicoList = tecnicoList,
                         onEditTicket = onEditTicket,
                         onDeleteTicket = onDeleteTicket,
-                        onMessageTicket = { /* lógica para enviar mensaje */ }
+                        onMessageTicket = onMessageTicket // Pasamos la función aquí
                     )
-
                 }
             }
         }
@@ -170,7 +175,7 @@ fun TicketRow(
     tecnicoList: List<TecnicoEntity>,
     onEditTicket: (TicketEntity) -> Unit,
     onDeleteTicket: (TicketEntity) -> Unit,
-    onMessageTicket: (TicketEntity) -> Unit // Nuevo parámetro para mensaje
+    onMessageTicket: (TicketEntity) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -232,7 +237,7 @@ fun TicketRow(
                     )
                 )
                 Text(
-                    text = "Técnico: ${tecnico?.nombres}",
+                    text = "Técnico: ${tecnico?.nombres ?: "Desconocido"}",
                     style = TextStyle(
                         fontSize = 14.sp,
                         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
