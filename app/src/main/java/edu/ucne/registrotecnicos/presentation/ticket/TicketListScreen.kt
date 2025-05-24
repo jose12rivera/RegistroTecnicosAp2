@@ -16,6 +16,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -36,7 +38,7 @@ import kotlinx.coroutines.launch
 fun TicketListScreen(
     drawerState: DrawerState,
     scope: CoroutineScope,
-    navController: NavController,  // Recibe NavController para navegación
+    navController: NavController,
     viewModel: TicketViewModel = hiltViewModel(),
     createTicket: () -> Unit,
     onEditTicket: (TicketEntity) -> Unit,
@@ -64,10 +66,49 @@ fun TicketListScreen(
         onSearchQueryChange = { searchQuery = it },
         filteredTickets = filteredTickets,
         onMessageTicket = { ticket ->
-            // Navegar a la pantalla de mensajes con el ID del técnico
             navController.navigate("mensaje/${ticket.tecnicoId}")
         }
     )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun GradientTopAppBar(
+    title: String,
+    onNavigationClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(56.dp)
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(Color(0xFF0D47A1), Color(0xFF1976D2)) // Azul oscuro a azul medio
+                )
+            ),
+        contentAlignment = Alignment.CenterStart
+    ) {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            IconButton(onClick = onNavigationClick) {
+                Image(
+                    painter = painterResource(id = R.drawable.tic),
+                    contentDescription = "Ir al menú",
+                    modifier = Modifier.size(24.dp)
+                )
+            }
+            Text(
+                text = title,
+                style = TextStyle(
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+            )
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -83,33 +124,13 @@ fun TicketListBodyScreen(
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
     filteredTickets: List<TicketEntity>,
-    onMessageTicket: (TicketEntity) -> Unit // Parámetro para manejar mensajes
+    onMessageTicket: (TicketEntity) -> Unit
 ) {
     Scaffold(
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = "Lista de Tickets",
-                        style = TextStyle(
-                            fontSize = 22.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                        Image(
-                            painter = painterResource(id = R.drawable.tic),
-                            contentDescription = "Ir al menú",
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color(0xFF6200EE)
-                )
+            GradientTopAppBar(
+                title = "Lista de Tickets",
+                onNavigationClick = { scope.launch { drawerState.open() } }
             )
         },
         floatingActionButton = {
@@ -161,7 +182,7 @@ fun TicketListBodyScreen(
                         tecnicoList = tecnicoList,
                         onEditTicket = onEditTicket,
                         onDeleteTicket = onDeleteTicket,
-                        onMessageTicket = onMessageTicket // Pasamos la función aquí
+                        onMessageTicket = onMessageTicket
                     )
                 }
             }
@@ -256,7 +277,7 @@ fun TicketRow(
                 expanded = expanded,
                 onDismissRequest = { expanded = false },
                 modifier = Modifier.background(MaterialTheme.colorScheme.surface),
-                offset = DpOffset(x = (220).dp, y = 0.dp)
+                offset = DpOffset(x = 220.dp, y = 0.dp)
             ) {
                 DropdownMenuItem(
                     text = { Text("Mensaje") },
