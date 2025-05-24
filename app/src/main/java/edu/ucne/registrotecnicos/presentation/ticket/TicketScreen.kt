@@ -1,6 +1,8 @@
 package edu.ucne.registrotecnicos.presentation.ticket
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,11 +10,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -26,6 +30,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -70,28 +75,38 @@ fun TicketBodyScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = "Registrar Ticket",
-                        style = TextStyle(
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
+            Box(
+                modifier = Modifier
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(Color(0xFF0D47A1), Color(0xFF1976D2)) // De azul oscuro a azul medio
                         )
                     )
-                },
-                navigationIcon = {
-                    IconButton(onClick = goBack) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Regresar")
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color(0xFF6200EE)
+            ) {
+                CenterAlignedTopAppBar(
+                    title = {
+                        Text(
+                            text = "Registrar Ticket",
+                            style = TextStyle(
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = goBack) {
+                            Icon(Icons.Filled.ArrowBack, contentDescription = "Regresar", tint = Color.White)
+                        }
+                    },
+                    // Para que no pinte fondo y deje visible el gradiente:
+                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = Color.Transparent
+                    )
                 )
-            )
+            }
         }
-    ) { paddingValues ->
+    )  { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -163,29 +178,13 @@ fun TicketBodyScreen(
                     modifier = Modifier.weight(1f),
                     onClick = { saveTicket() }
                 ) {
-                    Text(text = "Guardar")
-                    Icon(Icons.Filled.Add, contentDescription = "Guardar")
+                    Icon(Icons.Filled.Edit, contentDescription = "Guardar")
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Guardar")
                 }
             }
 
-//            Spacer(modifier = Modifier.height(16.dp))
 //
-//            OutlinedButton(
-//                modifier = Modifier.fillMaxWidth(),
-//                onClick = goToMensajeScreen
-//            ) {
-//                Text(text = "Enviar Mensajes")
-//                Icon(Icons.Filled.Email, contentDescription = "Enviar Mensajes")
-//            }
-//
-//            uiState.mensajeError?.let { message ->
-//                Spacer(modifier = Modifier.height(8.dp))
-//                Text(
-//                    text = message,
-//                    color = Color.Red,
-//                    style = TextStyle(fontSize = 14.sp, fontWeight = FontWeight.Bold)
-//                )
-//            }
         }
     }
 }
