@@ -214,7 +214,6 @@ fun TicketRow(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(Color(0xFF0D47A1), Color(0xFF1976D2))

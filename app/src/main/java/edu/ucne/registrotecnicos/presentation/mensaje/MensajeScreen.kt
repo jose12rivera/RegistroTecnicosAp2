@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -87,7 +88,7 @@ fun MensajeScreen(viewModel: MensajesViewModel = hiltViewModel()) {
             onClick = { viewModel.saveMensaje() },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Icon(Icons.Filled.Edit, contentDescription = "Guardar")
+            Icon(Icons.Filled.Check, contentDescription = "Guardar")
             Spacer(modifier = Modifier.width(8.dp))
             Text("Guardar Mensaje")
 

@@ -1,6 +1,8 @@
 package edu.ucne.registrotecnicos.presentation.tecnico
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -8,10 +10,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,9 +32,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
@@ -50,7 +58,6 @@ fun EditTecnicoScreen(
         goBack = goBack
     )
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditTecnicoBodyScreen(
@@ -62,33 +69,38 @@ fun EditTecnicoBodyScreen(
 ) {
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "Editar Técnico",
-                        style = MaterialTheme.typography.titleLarge.copy(
-                            color = Color.White,
-                            fontWeight = FontWeight.Bold
+            Box(
+                modifier = Modifier
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(Color(0xFF0D47A1), Color(0xFF1976D2)) // mismo degradado azul
                         )
                     )
-                },
-                navigationIcon = {
-                    IconButton(onClick = goBack) {
-                        Icon(
-                            imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Regresar",
-                            tint = Color.White
+            ) {
+                CenterAlignedTopAppBar(
+                    title = {
+                        Text(
+                            text = "Editar Técnico",
+                            color = Color.White,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 22.sp
                         )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF6200EE),
-                    titleContentColor = Color.White,
-                    navigationIconContentColor = Color.White
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = goBack) {
+                            Icon(Icons.Filled.ArrowBack, contentDescription = "Volver", tint = Color.White)
+                        }
+                    },
+                    actions = {
+                        IconButton(onClick = save) {
+                            Icon(Icons.Filled.Check, contentDescription = "Guardar", tint = Color.White)
+                        }
+                    },
+                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = Color.Transparent
+                    )
                 )
-            )
-
-
+            }
         }
     ) { paddingValues ->
         Column(
@@ -130,16 +142,18 @@ fun EditTecnicoBodyScreen(
                     modifier = Modifier.weight(1f),
                     onClick = { save() }
                 ) {
+                    Icon(Icons.Filled.Check, contentDescription = "Guardar")
+                    Spacer(modifier = Modifier.width(8.dp))
                     Text(text = "Guardar")
-                    Icon(Icons.Filled.Add, contentDescription = "Guardar")
                 }
 
                 OutlinedButton(
                     modifier = Modifier.weight(1f),
                     onClick = { goBack() }
                 ) {
+                    Icon(Icons.Filled.Close, contentDescription = "Cancelar")
+                    Spacer(modifier = Modifier.width(8.dp))
                     Text(text = "Cancelar")
-                    Icon(Icons.Filled.Refresh, contentDescription = "Cancelar")
                 }
             }
 

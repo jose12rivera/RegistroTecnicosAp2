@@ -15,6 +15,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -49,7 +50,6 @@ fun TecnicoListScreen(
     )
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TecnicoListBodyScreen(
@@ -71,39 +71,45 @@ fun TecnicoListBodyScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    Text(
-                        text = "Lista de Técnicos",
-                        style = TextStyle(
-                            fontSize = 22.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                        Image(
-                            painter = painterResource(id = R.drawable.tic),
-                            contentDescription = "Ir al menú",
-                            modifier = Modifier.size(24.dp)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth() // para que ocupe todo el ancho disponible
+                            .background(
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(Color(0xFF0D47A1), Color(0xFF1976D2))
+                                )
+                            )
+                            .padding(horizontal = 8.dp, vertical = 4.dp) // opcional para que no quede pegado
+                    ) {
+                        Text(
+                            text = "Lista de Técnicos",
+                            style = TextStyle(
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            ),
+                            modifier = Modifier.align(Alignment.Center) // para centrar texto dentro del Box
                         )
                     }
                 },
+                navigationIcon = {  },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color(0xFF6200EE)
+                    containerColor = Color.Transparent // importante poner transparente para que se vea el fondo del Box
                 )
             )
+
         },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = createTecnico,
                 modifier = Modifier.padding(16.dp),
-                containerColor = MaterialTheme.colorScheme.primary,
+                containerColor = Color(0xFF4CAF50),  // Verde
                 contentColor = Color.White
             ) {
                 Icon(Icons.Filled.Add, contentDescription = "Añadir Técnico")
             }
         }
+
     ) { paddingValues ->
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -146,8 +152,7 @@ fun SearchFilter(
             unfocusedIndicatorColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
             focusedLeadingIconColor = MaterialTheme.colorScheme.primary,
             unfocusedLeadingIconColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
-        )
-        ,
+        ),
         leadingIcon = {
             Icon(Icons.Filled.Search, contentDescription = "Buscar")
         }
@@ -174,7 +179,11 @@ fun TecnicoRow(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
-                .background(MaterialTheme.colorScheme.surfaceVariant),
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(Color(0xFF0D47A1), Color(0xFF1976D2)) // Azul oscuro a azul medio
+                    )
+                ),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column(

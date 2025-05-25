@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ElevatedCard
@@ -120,7 +121,7 @@ fun TecnicoBodyScreen(
                     onClick = { save() }
                 ) {
                     Text(text = "Guardar")
-                    Icon(Icons.Default.Add, contentDescription = "Guardar")
+                    Icon(Icons.Default.Check, contentDescription = "Guardar")
                 }
 
                 OutlinedButton(
