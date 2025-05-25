@@ -57,7 +57,6 @@ fun TicketScreen(viewModel: TicketViewModel = hiltViewModel(), goBack: () -> Uni
         goToMensajeScreen = goToMensajeScreen
     )
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TicketBodyScreen(
@@ -80,7 +79,7 @@ fun TicketBodyScreen(
                 modifier = Modifier
                     .background(
                         brush = Brush.verticalGradient(
-                            colors = listOf(Color(0xFF0D47A1), Color(0xFF1976D2)) // De azul oscuro a azul medio
+                            colors = listOf(Color(0xFF0D47A1), Color(0xFF1976D2))
                         )
                     )
             ) {
@@ -100,14 +99,13 @@ fun TicketBodyScreen(
                             Icon(Icons.Filled.ArrowBack, contentDescription = "Regresar", tint = Color.White)
                         }
                     },
-                    // Para que no pinte fondo y deje visible el gradiente:
                     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                         containerColor = Color.Transparent
                     )
                 )
             }
         }
-    )  { paddingValues ->
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -115,11 +113,31 @@ fun TicketBodyScreen(
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
+            // Mensajes de error o éxito
+            if (!uiState.mensajeError.isNullOrEmpty()) {
+                Text(
+                    text = uiState.mensajeError,
+                    color = Color.Red,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            }
+
+            if (!uiState.mensajeExito.isNullOrEmpty()) {
+                Text(
+                    text = uiState.mensajeExito,
+                    color = Color(0xFF388E3C),
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            }
+
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(text = "Fecha") },
                 value = uiState.fecha,
-                onValueChange = onFechaChange
+                onValueChange = onFechaChange,
+                singleLine = true
             )
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -127,7 +145,13 @@ fun TicketBodyScreen(
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(text = "Prioridad ID") },
                 value = uiState.prioridadId?.toString() ?: "",
-                onValueChange = { onPrioridadIdChange(it.toIntOrNull()) }
+                onValueChange = {
+                    // Solo aceptar números o vacío
+                    if (it.isEmpty() || it.all { char -> char.isDigit() }) {
+                        onPrioridadIdChange(it.toIntOrNull())
+                    }
+                },
+                singleLine = true
             )
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -135,7 +159,8 @@ fun TicketBodyScreen(
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(text = "Cliente") },
                 value = uiState.cliente,
-                onValueChange = onClienteChange
+                onValueChange = onClienteChange,
+                singleLine = true
             )
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -143,7 +168,8 @@ fun TicketBodyScreen(
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(text = "Asunto") },
                 value = uiState.asunto,
-                onValueChange = onAsuntoChange
+                onValueChange = onAsuntoChange,
+                singleLine = true
             )
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -151,7 +177,8 @@ fun TicketBodyScreen(
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(text = "Descripción") },
                 value = uiState.descripcion,
-                onValueChange = onDescripcionChange
+                onValueChange = onDescripcionChange,
+                maxLines = 4
             )
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -159,7 +186,12 @@ fun TicketBodyScreen(
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(text = "Técnico ID") },
                 value = uiState.tecnicoId?.toString() ?: "",
-                onValueChange = { onTecnicoIdChange(it.toIntOrNull()) }
+                onValueChange = {
+                    if (it.isEmpty() || it.all { char -> char.isDigit() }) {
+                        onTecnicoIdChange(it.toIntOrNull())
+                    }
+                },
+                singleLine = true
             )
             Spacer(modifier = Modifier.height(8.dp))
 
@@ -172,6 +204,7 @@ fun TicketBodyScreen(
                     onClick = { nuevoTicket() }
                 ) {
                     Text(text = "Nuevo")
+                    Spacer(modifier = Modifier.width(4.dp))
                     Icon(Icons.Filled.Refresh, contentDescription = "Nuevo")
                 }
 
@@ -184,8 +217,6 @@ fun TicketBodyScreen(
                     Text("Guardar")
                 }
             }
-
-//
         }
     }
 }

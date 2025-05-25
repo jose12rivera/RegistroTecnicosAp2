@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -161,7 +162,7 @@ fun DeleteTicketBodyScreen(
                     modifier = Modifier.weight(1f),
                     onClick = { onDeleteTicket() }
                 ) {
-                    Icon(Icons.Filled.Edit, contentDescription = "Eliminar")
+                    Icon(Icons.Filled.Delete, contentDescription = "Eliminar")
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(text = "Eliminar")
                 }
