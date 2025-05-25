@@ -191,14 +191,6 @@ fun TecnicoRow(
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = "TécnicoId: ${tecnico.tecnicoId}",
-                    style = TextStyle(
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                )
-                Text(
                     text = "Nombre: ${tecnico.nombres}",
                     style = TextStyle(
                         fontSize = 14.sp,

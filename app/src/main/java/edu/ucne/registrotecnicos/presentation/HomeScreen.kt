@@ -64,7 +64,7 @@ fun HomeScreen(
             )
 
             Text(
-                text = "Seleccione una opción",
+                text = "Bienvenido a mi app",
                 color = Color.White,
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(bottom = 16.dp)

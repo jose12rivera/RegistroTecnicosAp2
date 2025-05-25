@@ -228,11 +228,12 @@ fun TicketRow(
                 Text(
                     text = "Asunto: ${ticket.asunto}",
                     style = TextStyle(
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onSurface
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Normal,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
                     )
                 )
+
                 Text(
                     text = "Cliente: ${ticket.cliente}",
                     style = TextStyle(
