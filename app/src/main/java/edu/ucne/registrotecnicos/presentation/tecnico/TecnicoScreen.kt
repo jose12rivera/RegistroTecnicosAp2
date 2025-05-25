@@ -1,6 +1,8 @@
 package edu.ucne.registrotecnicos.presentation.tecnico
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -25,6 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -46,7 +49,6 @@ fun TecnicoScreen(viewModel: TecnicoViewModel = hiltViewModel(), goBack: () -> U
         goBack = goBack
     )
 }
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TecnicoBodyScreen(
@@ -60,26 +62,34 @@ fun TecnicoBodyScreen(
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            CenterAlignedTopAppBar(
-                title = {
-                    Text(
-                        text = "Registrar Tecnico",
-                        style = TextStyle(
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
+            Box(
+                modifier = Modifier.background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(Color(0xFF0D47A1), Color(0xFF1976D2)) // Azul oscuro a azul medio
                     )
-                },
-                navigationIcon = {
-                    IconButton(onClick = goBack) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Regresar")
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color(0xFF6200EE)
                 )
-            )
+            ) {
+                CenterAlignedTopAppBar(
+                    title = {
+                        Text(
+                            text = "Registrar Tecnico",
+                            style = TextStyle(
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                        )
+                    },
+                    navigationIcon = {
+                        IconButton(onClick = goBack) {
+                            Icon(Icons.Filled.ArrowBack, contentDescription = "Regresar", tint = Color.White)
+                        }
+                    },
+                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                        containerColor = Color.Transparent // Para dejar visible el gradiente
+                    )
+                )
+            }
         }
     ) { paddingValues ->
         Column(
@@ -100,13 +110,7 @@ fun TecnicoBodyScreen(
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(text = "Sueldo") },
                 value = uiState.sueldo?.toString() ?: "",
-                onValueChange = { input ->
-                    try {
-                        onSueldoChange(input.toDoubleOrNull()?.toString() ?: "")
-                    } catch (e: NumberFormatException) {
-                        onSueldoChange("")
-                    }
-                },
+                onValueChange = { input -> onSueldoChange(input) },
                 isError = uiState.sueldo == null
             )
 
