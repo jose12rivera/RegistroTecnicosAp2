@@ -1,12 +1,10 @@
 package edu.ucne.registrotecnicos.presentation.medicina
 
-
-import edu.ucne.registrotecnicos.data.remote.dto.MedicinasDto
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edu.ucne.registrotecnicos.data.remote.Resource
-
+import edu.ucne.registrotecnicos.data.remote.dto.MedicinasDto
 import edu.ucne.registrotecnicos.data.repository.MedicinaRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -32,30 +30,74 @@ class MedicinaViewModel @Inject constructor(
     }
 
     fun update() {
+        val currentState = _uiState.value
+        if (!validarCampos()) return
+
         viewModelScope.launch {
             medicinaRepository.updateMedicina(
                 MedicinasDto(
-                    medicinaId = _uiState.value.medicinaId ?: 0,
-                    descripcion = _uiState.value.descripcion,
-                    monto = _uiState.value.monto
+                    medicinaId = currentState.medicinaId ?: 0,
+                    descripcion = currentState.descripcion.orEmpty(),
+                    monto = currentState.monto
                 )
             )
+            // Opcional: recargar lista después de actualizar
+            getMedicinas()
         }
     }
+
+
 
     fun getMedicinas() {
         viewModelScope.launch {
             medicinaRepository.getMedicinas().collectLatest { result ->
                 when (result) {
-                    is Resource.Loading -> _uiState.update { it.copy(isLoading = true, errorMessage = null) }
-                    is Resource.Success -> _uiState.update {
-                        it.copy(medicinas = result.data ?: emptyList(), isLoading = false, errorMessage = null)
+                    is Resource.Loading -> {
+                        _uiState.update {
+                            it.copy(isLoading = true, errorMessage = null)
+                        }
                     }
-                    is Resource.Error -> _uiState.update {
-                        it.copy(errorMessage = result.message ?: "Error desconocido", isLoading = false)
+                    is Resource.Success -> {
+                        _uiState.update {
+                            it.copy(
+                                medicinas = result.data ?: emptyList(),
+                                isLoading = false,
+                                errorMessage = null
+                            )
+                        }
+                    }
+                    is Resource.Error -> {
+                        _uiState.update {
+                            it.copy(
+                                errorMessage = result.message ?: "Error desconocido",
+                                isLoading = false
+                            )
+                        }
                     }
                 }
             }
+        }
+    }
+
+    fun setDescripcion(value: String) {
+        _uiState.update { it.copy(descripcion = value) }
+    }
+
+    fun setMonto(value: Double) {
+        _uiState.update { it.copy(monto = value) }
+    }
+
+    fun setMedicinaId(id: Int) {
+        _uiState.update { it.copy(medicinaId = id) }
+    }
+
+    fun limpiarCampos() {
+        _uiState.update {
+            it.copy(
+                medicinaId = null,
+                descripcion = null,
+                monto = 0.0
+            )
         }
     }
 }

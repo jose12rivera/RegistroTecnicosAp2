@@ -18,6 +18,7 @@ import androidx.navigation.toRoute
 import edu.ucne.registrotecnicos.data.local.database.TecnicoDb
 import edu.ucne.registrotecnicos.presentation.HomeScreen
 import edu.ucne.registrotecnicos.presentation.medicina.MedicinaListScreen
+import edu.ucne.registrotecnicos.presentation.medicina.MedicinaScreen
 import edu.ucne.registrotecnicos.presentation.mensaje.MensajeScreen
 import edu.ucne.registrotecnicos.presentation.tecnico.DeleteTecnicoScreen
 import edu.ucne.registrotecnicos.presentation.tecnico.EditTecnicoScreen
@@ -117,6 +118,21 @@ fun registro_tecnicos_tickets(tecnicoDb: TecnicoDb, navHostController: NavHostCo
                 }
             )
         }
+
+
+
+
+        composable<Screen.Medicina> { backStackEntry ->
+            val args = backStackEntry.toRoute<Screen.Medicina>()
+            MedicinaScreen(
+                goBack = { navHostController.popBackStack() }
+                // Puedes usar args.medicinaid si MedicinaScreen lo requiere.
+            )
+        }
+
+
+
+
 
         composable<Screen.TicketList> {
             TicketListScreen(

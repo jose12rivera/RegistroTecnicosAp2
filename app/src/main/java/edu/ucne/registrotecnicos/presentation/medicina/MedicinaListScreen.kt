@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
@@ -54,10 +56,19 @@ fun MedicinaListBodyScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = onRefresh) {
-                Icon(Icons.Default.Refresh, contentDescription = "Refrescar")
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                modifier = Modifier.padding(end = 16.dp)
+            ) {
+                FloatingActionButton(onClick = onRefresh) {
+                    Icon(Icons.Default.Refresh, contentDescription = "Refrescar")
+                }
+                FloatingActionButton(onClick = { goToMedicina(0) }) { // 0 o -1 indica NUEVO
+                    Icon(Icons.Default.Add, contentDescription = "Agregar medicina")
+                }
             }
         }
+
     ) { innerPadding ->
         Column(
             modifier = Modifier
