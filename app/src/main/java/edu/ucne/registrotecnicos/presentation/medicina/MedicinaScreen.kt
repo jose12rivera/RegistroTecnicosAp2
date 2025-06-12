@@ -58,7 +58,6 @@ fun MedicinaScreen(
 
 
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MedicinaBodyScreen(
@@ -109,6 +108,16 @@ fun MedicinaBodyScreen(
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
+            // Mostrar mensaje de error si hay
+            uiState.inputError?.let { error ->
+                Text(
+                    text = error,
+                    color = Color.Red,
+                    style = MaterialTheme.typography.bodyMedium,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+            }
+
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(text = "Descripción") },
@@ -121,10 +130,9 @@ fun MedicinaBodyScreen(
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(text = "Monto") },
-                value = uiState.monto.toString(),
+                value = if (uiState.monto == 0.0) "" else uiState.monto.toString(),
                 onValueChange = {
-                    val parsed = it.toDoubleOrNull()
-                    if (parsed != null) onMontoChange(it)
+                    onMontoChange(it)
                 },
                 singleLine = true
             )
