@@ -17,6 +17,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.toRoute
 import edu.ucne.registrotecnicos.data.local.database.TecnicoDb
 import edu.ucne.registrotecnicos.presentation.HomeScreen
+import edu.ucne.registrotecnicos.presentation.medicina.MedicinaListScreen
 import edu.ucne.registrotecnicos.presentation.mensaje.MensajeScreen
 import edu.ucne.registrotecnicos.presentation.tecnico.DeleteTecnicoScreen
 import edu.ucne.registrotecnicos.presentation.tecnico.EditTecnicoScreen
@@ -24,6 +25,7 @@ import edu.ucne.registrotecnicos.presentation.tecnico.TecnicoListScreen
 import edu.ucne.registrotecnicos.presentation.tecnico.TecnicoScreen
 import edu.ucne.registrotecnicos.presentation.ticket.TicketListScreen
 import edu.ucne.registrotecnicos.presentation.ticket.TicketScreen
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -55,8 +57,12 @@ fun registro_tecnicos_tickets(tecnicoDb: TecnicoDb, navHostController: NavHostCo
                 },
                 goToTickets = {
                     navHostController.navigate(Screen.TicketList)
+                },
+                goToMedicina = {
+                    navHostController.navigate(Screen.MedicinaList)
                 }
             )
+
         }
 
 
@@ -99,6 +105,18 @@ fun registro_tecnicos_tickets(tecnicoDb: TecnicoDb, navHostController: NavHostCo
             )
         }
 
+        composable<Screen.MedicinaList> {
+            MedicinaListScreen(
+                goToMedicina = { medicinaId ->
+                    // Aquí podrías navegar a una pantalla de detalle si la implementas después
+                },
+                onDrawer = {
+                    scope.launch {
+                        drawerState.open()
+                    }
+                }
+            )
+        }
 
         composable<Screen.TicketList> {
             TicketListScreen(
