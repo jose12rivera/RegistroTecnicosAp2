@@ -99,7 +99,6 @@ private fun MedicinaRow(
             .padding(16.dp)
     ) {
         Text(text = "ID: ${item.medicinaId}")
-        Text(text = "Nombre: ${item.nombre ?: "Sin nombre"}")
         Text(text = "Descripción: ${item.descripcion ?: "Sin descripción"}")
         Text(text = "Monto: RD$${item.monto}")
     }
