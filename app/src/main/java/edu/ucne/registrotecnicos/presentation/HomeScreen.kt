@@ -8,10 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,7 +23,8 @@ import edu.ucne.registrotecnicos.R
 @Composable
 fun HomeScreen(
     goToTecnico: () -> Unit,
-    goToTickets: () -> Unit
+    goToTickets: () -> Unit,
+    goToMedicina: () -> Unit // Nuevo callback para Medicina
 ) {
     val context = LocalContext.current
 
@@ -38,7 +36,6 @@ fun HomeScreen(
                     colors = listOf(Color(0xFF0D47A1), Color(0xFF1976D2)) // Azul oscuro a azul medio
                 )
             )
-
             .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -48,10 +45,9 @@ fun HomeScreen(
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             Image(
                 painter = painterResource(id = R.drawable.ponicon),
-                contentDescription = "Imagen",
+                contentDescription = "Logo de la App",
                 modifier = Modifier.size(40.dp)
             )
 
@@ -72,17 +68,15 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Ahora 3 tarjetas en lugar de 2
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                OptionCard("Técnicos", R.drawable.icotec, goToTecnico)
-
-                OptionCard("Tickets", R.drawable.tic, goToTickets)
+                OptionCard(title = "Técnicos", imageResId = R.drawable.icotec, onClick = goToTecnico)
+                OptionCard(title = "Tickets", imageResId = R.drawable.tic, onClick = goToTickets)
+                OptionCard(title = "Medicina", imageResId = R.drawable.medicina, onClick = goToMedicina)
             }
-
-
-
         }
     }
 }
@@ -91,23 +85,22 @@ fun HomeScreen(
 fun OptionCard(title: String, imageResId: Int, onClick: () -> Unit) {
     Box(
         modifier = Modifier
-            .size(150.dp)
+            .size(120.dp)
             .clickable(onClick = onClick)
             .border(
                 width = 2.dp,
-                brush = Brush.horizontalGradient(listOf(Color.White, Color(0xFFFF5722))),
+                brush = Brush.horizontalGradient(
+                    listOf(Color.White, Color(0xFFFF5722))
+                ),
                 shape = RoundedCornerShape(12.dp)
             )
     ) {
         Card(
             modifier = Modifier.fillMaxSize(),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.Red
-            ),
+            colors = CardDefaults.cardColors(containerColor = Color(0xFFD32F2F)),
             elevation = CardDefaults.cardElevation(8.dp),
             shape = RoundedCornerShape(12.dp)
-        )
-        {
+        ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -116,7 +109,7 @@ fun OptionCard(title: String, imageResId: Int, onClick: () -> Unit) {
                 Image(
                     painter = painterResource(id = imageResId),
                     contentDescription = title,
-                    modifier = Modifier.size(48.dp)
+                    modifier = Modifier.size(40.dp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
