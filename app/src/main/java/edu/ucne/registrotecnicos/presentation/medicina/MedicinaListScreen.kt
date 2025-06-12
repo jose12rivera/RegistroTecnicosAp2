@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -27,6 +28,12 @@ fun MedicinaListScreen(
     onDrawer: () -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    // ✅ Refrescar lista al volver
+    LaunchedEffect(Unit) {
+        viewModel.getMedicinas()
+    }
+
     MedicinaListBodyScreen(
         uiState = uiState,
         goToMedicina = goToMedicina,
@@ -34,6 +41,7 @@ fun MedicinaListScreen(
         onRefresh = viewModel::getMedicinas
     )
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

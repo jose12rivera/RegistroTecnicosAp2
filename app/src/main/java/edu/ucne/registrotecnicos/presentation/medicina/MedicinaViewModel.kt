@@ -34,16 +34,22 @@ class MedicinaViewModel @Inject constructor(
         if (!validarCampos()) return
 
         viewModelScope.launch {
-            medicinaRepository.updateMedicina(
-                MedicinasDto(
-                    medicinaId = currentState.medicinaId ?: 0,
-                    descripcion = currentState.descripcion.orEmpty(),
-                    monto = currentState.monto
+            try {
+                medicinaRepository.updateMedicina(
+                    MedicinasDto(
+                        medicinaId = currentState.medicinaId!!, // ya validado
+                        descripcion = currentState.descripcion.orEmpty(),
+                        monto = currentState.monto
+                    )
                 )
-            )
-            // Opcional: recargar lista después de actualizar
-            getMedicinas()
+                getMedicinas()
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(errorMessage = e.localizedMessage ?: "Error al actualizar")
+                }
+            }
         }
+
     }
 
     fun getMedicinas() {

@@ -110,7 +110,7 @@ fun registro_tecnicos_tickets(tecnicoDb: TecnicoDb, navHostController: NavHostCo
         composable<Screen.MedicinaList> {
             MedicinaListScreen(
                 goToMedicina = { medicinaId ->
-                    navHostController.navigate(Screen.Medicina(medicinaId))
+                    navHostController.navigate(Screen.Medicina(0))
                 },
                 onDrawer = {
                     scope.launch {
@@ -119,6 +119,7 @@ fun registro_tecnicos_tickets(tecnicoDb: TecnicoDb, navHostController: NavHostCo
                 }
             )
         }
+
 
         composable<Screen.Medicina> { backStackEntry ->
             val args = backStackEntry.toRoute<Screen.Medicina>()
