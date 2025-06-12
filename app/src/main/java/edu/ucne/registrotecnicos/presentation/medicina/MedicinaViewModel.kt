@@ -28,7 +28,7 @@ class MedicinaViewModel @Inject constructor(
     }
 
     fun validarCampos(): Boolean {
-        return !_uiState.value.nombre.isNullOrBlank()
+        return !_uiState.value.descripcion.isNullOrBlank()
     }
 
     fun update() {
@@ -36,7 +36,6 @@ class MedicinaViewModel @Inject constructor(
             medicinaRepository.updateMedicina(
                 MedicinasDto(
                     medicinaId = _uiState.value.medicinaId ?: 0,
-                    nombre = _uiState.value.nombre ?: "",
                     descripcion = _uiState.value.descripcion,
                     monto = _uiState.value.monto
                 )
@@ -63,7 +62,6 @@ class MedicinaViewModel @Inject constructor(
 
 data class MedicinaUiState(
     val medicinaId: Int? = null,
-    val nombre: String? = null,
     val descripcion: String? = null,
     val monto: Double = 0.0,
     val isLoading: Boolean = false,
