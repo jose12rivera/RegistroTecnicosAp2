@@ -37,7 +37,7 @@ class MedicinaViewModel @Inject constructor(
             try {
                 medicinaRepository.updateMedicina(
                     MedicinasDto(
-                        medicinaId = currentState.medicinaId!!, // ya validado
+                        medicinaId = currentState.medicinaId!!,
                         descripcion = currentState.descripcion.orEmpty(),
                         monto = currentState.monto
                     )
