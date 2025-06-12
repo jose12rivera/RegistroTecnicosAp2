@@ -26,8 +26,25 @@ class MedicinaViewModel @Inject constructor(
     }
 
     fun validarCampos(): Boolean {
-        return !_uiState.value.descripcion.isNullOrBlank()
+        val descripcion = _uiState.value.descripcion
+        val monto = _uiState.value.monto
+
+        return when {
+            descripcion.isNullOrBlank() -> {
+                _uiState.update { it.copy(inputError = "La descripción no puede estar vacía") }
+                false
+            }
+            monto <= 0.0 -> {
+                _uiState.update { it.copy(inputError = "El monto debe ser mayor que cero") }
+                false
+            }
+            else -> {
+                _uiState.update { it.copy(inputError = null) }
+                true
+            }
+        }
     }
+
 
     fun update() {
         val currentState = _uiState.value
@@ -113,5 +130,6 @@ data class MedicinaUiState(
     val monto: Double = 0.0,
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
-    val medicinas: List<MedicinasDto> = emptyList()
+    val medicinas: List<MedicinasDto> = emptyList(),
+    val inputError: String? = null
 )
