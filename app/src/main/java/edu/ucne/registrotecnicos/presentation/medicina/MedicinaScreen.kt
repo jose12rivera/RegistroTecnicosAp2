@@ -24,12 +24,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun MedicinaScreen(
+    medicinaId: Int = 0,
     viewModel: MedicinaViewModel = hiltViewModel(),
     goBack: () -> Unit
 ) {
-    // Limpiar campos si estamos creando uno nuevo
-    LaunchedEffect(Unit) {
-        viewModel.limpiarCampos()
+    LaunchedEffect(medicinaId) {
+        if (medicinaId != 0) { // Solo cargar si ID válido
+            viewModel.limpiarCampos() // Si es nuevo registro
+        }
     }
 
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
@@ -37,11 +39,18 @@ fun MedicinaScreen(
         uiState = uiState.value,
         onDescripcionChange = { viewModel.setDescripcion(it) },
         onMontoChange = { viewModel.setMonto(it.toDoubleOrNull() ?: 0.0) },
-        saveMedicina = { if (viewModel.validarCampos()) viewModel.update() },
+        saveMedicina = {
+            if (viewModel.validarCampos()) {
+                viewModel.update()
+                goBack()  // Volver atrás después de guardar
+            }
+        },
         nuevoMedicina = { viewModel.limpiarCampos() },
         goBack = goBack
     )
 }
+
+
 
 
 @OptIn(ExperimentalMaterial3Api::class)

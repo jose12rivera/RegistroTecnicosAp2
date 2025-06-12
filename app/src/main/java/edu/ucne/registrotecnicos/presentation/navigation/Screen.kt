@@ -36,8 +36,10 @@ sealed class Screen {
     data class Mensaje(val ticketId: Int) : Screen()
     @Serializable
     data object MedicinaList : Screen()
+
     @Serializable
-    data class Medicina(val medicinaid: Int) : Screen()
+    data class Medicina(val medicinaId: Int) : Screen()
+
 
 
 

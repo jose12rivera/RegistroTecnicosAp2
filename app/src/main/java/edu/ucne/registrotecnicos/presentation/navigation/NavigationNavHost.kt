@@ -106,10 +106,36 @@ fun registro_tecnicos_tickets(tecnicoDb: TecnicoDb, navHostController: NavHostCo
             )
         }
 
+//        composable<Screen.MedicinaList> {
+//            MedicinaListScreen(
+//                goToMedicina = { medicinaId ->
+//                    // Aquí podrías navegar a una pantalla de detalle si la implementas después
+//                },
+//                onDrawer = {
+//                    scope.launch {
+//                        drawerState.open()
+//                    }
+//                }
+//            )
+//        }
+//
+//
+//
+//
+//        composable<Screen.Medicina> { backStackEntry ->
+//            val args = backStackEntry.toRoute<Screen.Medicina>()
+//            MedicinaScreen(
+//                goBack = { navHostController.popBackStack() }
+//                // Puedes usar args.medicinaid si MedicinaScreen lo requiere.
+//            )
+//        }
+
+
+
         composable<Screen.MedicinaList> {
             MedicinaListScreen(
                 goToMedicina = { medicinaId ->
-                    // Aquí podrías navegar a una pantalla de detalle si la implementas después
+                    navHostController.navigate(Screen.Medicina(medicinaId))
                 },
                 onDrawer = {
                     scope.launch {
@@ -119,18 +145,13 @@ fun registro_tecnicos_tickets(tecnicoDb: TecnicoDb, navHostController: NavHostCo
             )
         }
 
-
-
-
         composable<Screen.Medicina> { backStackEntry ->
             val args = backStackEntry.toRoute<Screen.Medicina>()
             MedicinaScreen(
+                medicinaId = args.medicinaId,  // Pasar el ID al ViewModel
                 goBack = { navHostController.popBackStack() }
-                // Puedes usar args.medicinaid si MedicinaScreen lo requiere.
             )
         }
-
-
 
 
 

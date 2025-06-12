@@ -46,8 +46,6 @@ class MedicinaViewModel @Inject constructor(
         }
     }
 
-
-
     fun getMedicinas() {
         viewModelScope.launch {
             medicinaRepository.getMedicinas().collectLatest { result ->
@@ -82,6 +80,7 @@ class MedicinaViewModel @Inject constructor(
     fun setDescripcion(value: String) {
         _uiState.update { it.copy(descripcion = value) }
     }
+
 
     fun setMonto(value: Double) {
         _uiState.update { it.copy(monto = value) }
