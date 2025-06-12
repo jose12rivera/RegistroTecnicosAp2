@@ -21,20 +21,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
+import edu.ucne.registrotecnicos.presentation.navigation.Screen
 
 @Composable
 fun MedicinaScreen(
     medicinaId: Int = 0,
     viewModel: MedicinaViewModel = hiltViewModel(),
-    goBack: () -> Unit
+    navController: NavHostController
 ) {
     LaunchedEffect(medicinaId) {
-        if (medicinaId != 0) { // Solo cargar si ID válido
-            viewModel.limpiarCampos() // Si es nuevo registro
+        if (medicinaId != 0) {
+            viewModel.limpiarCampos()
         }
     }
 
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+
     MedicinaBodyScreen(
         uiState = uiState.value,
         onDescripcionChange = { viewModel.setDescripcion(it) },
@@ -42,13 +45,16 @@ fun MedicinaScreen(
         saveMedicina = {
             if (viewModel.validarCampos()) {
                 viewModel.update()
-                goBack()  // Volver atrás después de guardar
+                navController.navigate(Screen.MedicinaList) {
+                    popUpTo(Screen.MedicinaList) { inclusive = true }
+                }
             }
         },
         nuevoMedicina = { viewModel.limpiarCampos() },
-        goBack = goBack
+        goBack = { navController.popBackStack() }
     )
 }
+
 
 
 
