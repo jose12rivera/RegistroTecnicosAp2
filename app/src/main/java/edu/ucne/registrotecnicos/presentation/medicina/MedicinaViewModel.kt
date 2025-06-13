@@ -45,6 +45,27 @@ class MedicinaViewModel @Inject constructor(
         }
     }
 
+    fun create() {
+        val currentState = _uiState.value
+        if (!validarCampos()) return
+
+        viewModelScope.launch {
+            try {
+                medicinaRepository.createMedicina(
+                    MedicinasDto(
+                        descripcion = currentState.descripcion.orEmpty(),
+                        monto = currentState.monto
+                    )
+                )
+                limpiarCampos()
+                getMedicinas()
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(errorMessage = e.localizedMessage ?: "Error al guardar")
+                }
+            }
+        }
+    }
 
     fun update() {
         val currentState = _uiState.value
@@ -54,11 +75,12 @@ class MedicinaViewModel @Inject constructor(
             try {
                 medicinaRepository.updateMedicina(
                     MedicinasDto(
-                        medicinaId = currentState.medicinaId!!,
+                        medicinaId = currentState.medicinaId ?: 0,
                         descripcion = currentState.descripcion.orEmpty(),
                         monto = currentState.monto
                     )
                 )
+                limpiarCampos()
                 getMedicinas()
             } catch (e: Exception) {
                 _uiState.update {
@@ -66,7 +88,6 @@ class MedicinaViewModel @Inject constructor(
                 }
             }
         }
-
     }
 
     fun getMedicinas() {
@@ -104,7 +125,6 @@ class MedicinaViewModel @Inject constructor(
         _uiState.update { it.copy(descripcion = value) }
     }
 
-
     fun setMonto(value: Double) {
         _uiState.update { it.copy(monto = value) }
     }
@@ -118,7 +138,8 @@ class MedicinaViewModel @Inject constructor(
             it.copy(
                 medicinaId = null,
                 descripcion = null,
-                monto = 0.0
+                monto = 0.0,
+                inputError = null
             )
         }
     }

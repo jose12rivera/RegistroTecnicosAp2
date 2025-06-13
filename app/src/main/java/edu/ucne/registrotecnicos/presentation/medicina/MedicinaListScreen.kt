@@ -29,7 +29,6 @@ fun MedicinaListScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    // ✅ Refrescar lista al volver
     LaunchedEffect(Unit) {
         viewModel.getMedicinas()
     }

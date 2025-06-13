@@ -44,12 +44,17 @@ fun MedicinaScreen(
         onMontoChange = { viewModel.setMonto(it.toDoubleOrNull() ?: 0.0) },
         saveMedicina = {
             if (viewModel.validarCampos()) {
-                viewModel.update()
+                if (uiState.value.medicinaId == null) {
+                    viewModel.create()
+                } else {
+                    viewModel.update()
+                }
                 navController.navigate(Screen.MedicinaList) {
                     popUpTo(Screen.MedicinaList) { inclusive = true }
                 }
             }
-        },
+        }
+        ,
         nuevoMedicina = { viewModel.limpiarCampos() },
         goBack = { navController.popBackStack() }
     )
