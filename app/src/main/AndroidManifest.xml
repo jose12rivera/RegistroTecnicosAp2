@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
     <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:name=".RegistroTecnicos"
@@ -15,7 +17,10 @@
         android:theme="@style/Theme.RegistroTecnicos"
         tools:targetApi="31"
 
+
         android:usesCleartextTraffic="true">
+
+
 
         <activity
             android:name=".MainActivity"
