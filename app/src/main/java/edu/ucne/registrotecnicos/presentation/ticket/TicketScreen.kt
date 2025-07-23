@@ -1,48 +1,66 @@
 package edu.ucne.registrotecnicos.presentation.ticket
 
+import android.Manifest
+import android.content.Context
+import android.os.Build
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import edu.ucne.registrotecnicos.common.NotificationHandler
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 
+
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun TicketScreen(viewModel: TicketViewModel = hiltViewModel(), goBack: () -> Unit, goToMensajeScreen: () -> Unit) {
+fun TicketScreen(
+    viewModel: TicketViewModel = hiltViewModel(),
+    goBack: () -> Unit,
+    goToMensajeScreen: () -> Unit
+) {
+    val context = LocalContext.current
     val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+
+    // Solicitud de permiso para notificaciones en Android 13+
+    val postNotificationPermission =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
+        } else null
+
+    val notificationHandler = remember { NotificationHandler(context) }
+
+    LaunchedEffect(true) {
+        if (postNotificationPermission != null && !postNotificationPermission.status.isGranted) {
+            postNotificationPermission.launchPermissionRequest()
+        }
+    }
+
     TicketBodyScreen(
         uiState = uiState.value,
         onFechaChange = viewModel::onFechaChange,
@@ -51,12 +69,16 @@ fun TicketScreen(viewModel: TicketViewModel = hiltViewModel(), goBack: () -> Uni
         onDescripcionChange = viewModel::onDescripcionChange,
         onTecnicoIdChange = viewModel::onTecnicoIdChange,
         onPrioridadIdChange = viewModel::onPrioridadIdChange,
-        saveTicket = viewModel::saveTicket,
+        saveTicket = {
+            viewModel.saveTicket()
+            notificationHandler.showSimpleNotification()
+        },
         nuevoTicket = viewModel::nuevoTicket,
         goBack = goBack,
         goToMensajeScreen = goToMensajeScreen
     )
 }
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TicketBodyScreen(
@@ -113,7 +135,6 @@ fun TicketBodyScreen(
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState())
         ) {
-            // Mensajes de error o éxito
             if (!uiState.mensajeError.isNullOrEmpty()) {
                 Text(
                     text = uiState.mensajeError,
@@ -139,14 +160,13 @@ fun TicketBodyScreen(
                 onValueChange = onFechaChange,
                 singleLine = true
             )
-            Spacer(modifier = Modifier.height(8.dp))
 
+            Spacer(modifier = Modifier.height(8.dp))
             OutlinedTextField(
                 modifier = Modifier.fillMaxWidth(),
                 label = { Text(text = "Prioridad ID") },
                 value = uiState.prioridadId?.toString() ?: "",
                 onValueChange = {
-                    // Solo aceptar números o vacío
                     if (it.isEmpty() || it.all { char -> char.isDigit() }) {
                         onPrioridadIdChange(it.toIntOrNull())
                     }
@@ -217,6 +237,37 @@ fun TicketBodyScreen(
                     Text("Guardar")
                 }
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+fun MainScreen(context: Context) {
+    val postNotificationPermission =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            null
+        }
+
+    val notificationHandler = NotificationHandler(context)
+
+    LaunchedEffect(key1 = true) {
+        if (postNotificationPermission != null && !postNotificationPermission.status.isGranted) {
+            postNotificationPermission.launchPermissionRequest()
+        }
+    }
+
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Button(onClick = {
+            notificationHandler.showSimpleNotification()
+        }) {
+            Text(text = "Mostrar Notificación")
         }
     }
 }
