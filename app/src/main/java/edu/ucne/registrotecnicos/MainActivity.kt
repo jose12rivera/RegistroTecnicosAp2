@@ -16,7 +16,9 @@ import androidx.room.Room
 import dagger.hilt.android.AndroidEntryPoint
 import edu.ucne.registrotecnicos.data.local.database.TecnicoDb
 import edu.ucne.registrotecnicos.presentation.navigation.registro_tecnicos_tickets
+import edu.ucne.registrotecnicos.presentation.ticket.MainScreen
 import edu.ucne.registrotecnicos.ui.theme.RegistroTecnicosTheme
+
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -31,6 +33,8 @@ class MainActivity : ComponentActivity() {
                     TecnicoDb::class.java,
                     "TecnicoDb"
                 ).build()
+
+                MainScreen(context = this)
 
                 registro_tecnicos_tickets(
                     navHostController = navController,
