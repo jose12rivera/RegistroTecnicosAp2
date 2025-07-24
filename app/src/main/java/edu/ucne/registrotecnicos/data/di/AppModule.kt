@@ -38,5 +38,5 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideClienteDao(appDataDb: TecnicoDb) = appDataDb.clienteDao() // ✅ Agregado
+    fun provideClienteDao(appDataDb: TecnicoDb) = appDataDb.clienteDao() // Agregado
 }
