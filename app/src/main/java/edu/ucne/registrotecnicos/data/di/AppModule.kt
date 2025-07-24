@@ -10,9 +10,10 @@ import dagger.hilt.components.SingletonComponent
 import edu.ucne.registrotecnicos.data.local.database.TecnicoDb
 import javax.inject.Singleton
 
-@InstallIn(SingletonComponent::class)
 @Module
+@InstallIn(SingletonComponent::class)
 object AppModule {
+
     @Provides
     @Singleton
     fun provideTecnicoDb(@ApplicationContext applicationContext: Context): TecnicoDb =
@@ -34,4 +35,8 @@ object AppModule {
     @Provides
     @Singleton
     fun provideMensajeDao(appDataDb: TecnicoDb) = appDataDb.mensajeDao()
+
+    @Provides
+    @Singleton
+    fun provideClienteDao(appDataDb: TecnicoDb) = appDataDb.clienteDao() // ✅ Agregado
 }
