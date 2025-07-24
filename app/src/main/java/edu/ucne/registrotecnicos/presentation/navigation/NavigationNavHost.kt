@@ -196,15 +196,23 @@ fun registro_tecnicos_tickets(tecnicoDb: TecnicoDb, navHostController: NavHostCo
             )
         }
 
-        // Clientes
         composable<Screen.ClienteList> {
             ClienteListScreen(
-                goToCliente = { clienteId -> navHostController.navigate(Screen.Cliente(clienteId)) },
-                onDrawer = {
-                    scope.launch { drawerState.open() }
+                drawerState = drawerState,
+                scope = scope,
+                createCliente = {
+                    navHostController.navigate(Screen.Cliente(0))
+                },
+                onEditCliente = { clienteId ->
+                    navHostController.navigate(Screen.EditCliente(clienteId))
+                },
+                onDeleteCliente = { clienteId ->
+                    navHostController.navigate(Screen.DeleteCliente(clienteId))
                 }
             )
         }
+
+
         composable<Screen.Cliente> { backStackEntry ->
             val args = backStackEntry.toRoute<Screen.Cliente>()
             ClienteScreen(
