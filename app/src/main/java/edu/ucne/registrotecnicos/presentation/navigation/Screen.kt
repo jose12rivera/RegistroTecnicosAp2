@@ -41,6 +41,16 @@ sealed class Screen {
     data class Medicina(val medicinaId: Int) : Screen()
 
 
+    @Serializable
+    data object ClienteList : Screen()
 
+    @Serializable
+    data class Cliente(val clienteId: Int) : Screen()
+
+    @Serializable
+    data class EditCliente(val clienteId: Int) : Screen()
+
+    @Serializable
+    data class DeleteCliente(val clienteId: Int) : Screen()
 
 }
