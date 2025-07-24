@@ -17,6 +17,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.toRoute
 import edu.ucne.registrotecnicos.data.local.database.TecnicoDb
 import edu.ucne.registrotecnicos.presentation.HomeScreen
+import edu.ucne.registrotecnicos.presentation.cliente.ClienteListScreen
 import edu.ucne.registrotecnicos.presentation.medicina.MedicinaListScreen
 import edu.ucne.registrotecnicos.presentation.medicina.MedicinaScreen
 import edu.ucne.registrotecnicos.presentation.mensaje.MensajeScreen
@@ -61,7 +62,8 @@ fun registro_tecnicos_tickets(tecnicoDb: TecnicoDb, navHostController: NavHostCo
                 },
                 goToMedicina = {
                     navHostController.navigate(Screen.MedicinaList)
-                }
+                },
+                goToCliente = { navHostController.navigate(Screen.ClienteList) }
             )
 
         }
@@ -193,6 +195,36 @@ fun registro_tecnicos_tickets(tecnicoDb: TecnicoDb, navHostController: NavHostCo
             )
         }
 
+        // Clientes
+        composable<Screen.ClienteList> {
+            ClienteListScreen(
+                goToCliente = { clienteId -> navHostController.navigate(Screen.Cliente(clienteId)) },
+                onDrawer = {
+                    scope.launch { drawerState.open() }
+                }
+            )
+        }
+//        composable<Screen.Cliente> { backStackEntry ->
+//            val args = backStackEntry.toRoute<Screen.Cliente>()
+//            ClienteScreen(
+//                clienteId = args.clienteId,
+//                goBack = { navHostController.popBackStack() }
+//            )
+//        }
+//        composable<Screen.EditCliente> { backStackEntry ->
+//            val args = backStackEntry.toRoute<Screen.EditCliente>()
+//            EditClienteScreen(
+//                clienteId = args.clienteId,
+//                goBack = { navHostController.popBackStack() }
+//            )
+//        }
+//        composable<Screen.DeleteCliente> { backStackEntry ->
+//            val args = backStackEntry.toRoute<Screen.DeleteCliente>()
+//            DeleteClienteScreen(
+//                clienteId = args.clienteId,
+//                goBack = { navHostController.popBackStack() }
+//            )
+//        }
 
     }
 }
