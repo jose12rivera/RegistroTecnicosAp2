@@ -19,6 +19,8 @@ import edu.ucne.registrotecnicos.data.local.database.TecnicoDb
 import edu.ucne.registrotecnicos.presentation.HomeScreen
 import edu.ucne.registrotecnicos.presentation.cliente.ClienteListScreen
 import edu.ucne.registrotecnicos.presentation.cliente.ClienteScreen
+import edu.ucne.registrotecnicos.presentation.cliente.DeleteClienteScreen
+import edu.ucne.registrotecnicos.presentation.cliente.EditClienteScreen
 import edu.ucne.registrotecnicos.presentation.medicina.MedicinaListScreen
 import edu.ucne.registrotecnicos.presentation.medicina.MedicinaScreen
 import edu.ucne.registrotecnicos.presentation.mensaje.MensajeScreen
@@ -196,22 +198,26 @@ fun registro_tecnicos_tickets(tecnicoDb: TecnicoDb, navHostController: NavHostCo
             )
         }
 
+
+
+
+
+// Clientes
         composable<Screen.ClienteList> {
             ClienteListScreen(
                 drawerState = drawerState,
                 scope = scope,
                 createCliente = {
-                    navHostController.navigate(Screen.Cliente(0))
+                    navHostController.navigate(Screen.Cliente(0)) // Ir a crear nuevo cliente (id = 0)
                 },
                 onEditCliente = { clienteId ->
-                    navHostController.navigate(Screen.EditCliente(clienteId))
+                    navHostController.navigate(Screen.EditCliente(clienteId)) // Navegar a editar
                 },
                 onDeleteCliente = { clienteId ->
-                    navHostController.navigate(Screen.DeleteCliente(clienteId))
+                    navHostController.navigate(Screen.DeleteCliente(clienteId)) // Navegar a eliminar
                 }
             )
         }
-
 
         composable<Screen.Cliente> { backStackEntry ->
             val args = backStackEntry.toRoute<Screen.Cliente>()
@@ -220,28 +226,22 @@ fun registro_tecnicos_tickets(tecnicoDb: TecnicoDb, navHostController: NavHostCo
                 goBack = { navHostController.popBackStack() }
             )
         }
+        composable<Screen.EditCliente> { backStackEntry ->
+            val args = backStackEntry.toRoute<Screen.EditCliente>()
+            EditClienteScreen(
+                clienteId = args.clienteId,
+                goBack = { navHostController.popBackStack() }
+            )
+        }
 
-//        composable<Screen.Cliente> { backStackEntry ->
-//            val args = backStackEntry.toRoute<Screen.Cliente>()
-//            ClienteScreen(
-//                clienteId = args.clienteId,
-//                goBack = { navHostController.popBackStack() }
-//            )
-//        }
-//        composable<Screen.EditCliente> { backStackEntry ->
-//            val args = backStackEntry.toRoute<Screen.EditCliente>()
-//            EditClienteScreen(
-//                clienteId = args.clienteId,
-//                goBack = { navHostController.popBackStack() }
-//            )
-//        }
-//        composable<Screen.DeleteCliente> { backStackEntry ->
-//            val args = backStackEntry.toRoute<Screen.DeleteCliente>()
-//            DeleteClienteScreen(
-//                clienteId = args.clienteId,
-//                goBack = { navHostController.popBackStack() }
-//            )
-//        }
+        composable<Screen.DeleteCliente> { backStackEntry ->
+            val args = backStackEntry.toRoute<Screen.DeleteCliente>()
+            DeleteClienteScreen(
+                clienteId = args.clienteId,
+                goBack = { navHostController.popBackStack() }
+            )
+        }
+
 
     }
 }
