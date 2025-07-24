@@ -24,7 +24,8 @@ import edu.ucne.registrotecnicos.R
 fun HomeScreen(
     goToTecnico: () -> Unit,
     goToTickets: () -> Unit,
-    goToMedicina: () -> Unit // Nuevo callback para Medicina
+    goToMedicina: () -> Unit,
+    goToCliente: () -> Unit  // Nueva función para Clientes
 ) {
     val context = LocalContext.current
 
@@ -68,7 +69,7 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Ahora 3 tarjetas en lugar de 2
+            // Ahora 4 tarjetas (Técnicos, Tickets, Medicina, Clientes)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceEvenly
@@ -76,6 +77,7 @@ fun HomeScreen(
                 OptionCard(title = "Técnicos", imageResId = R.drawable.icotec, onClick = goToTecnico)
                 OptionCard(title = "Tickets", imageResId = R.drawable.tic, onClick = goToTickets)
                 OptionCard(title = "Medicina", imageResId = R.drawable.medicina, onClick = goToMedicina)
+                OptionCard(title = "Clientes", imageResId = R.drawable.clientes, onClick = goToCliente) // Nueva tarjeta
             }
         }
     }
