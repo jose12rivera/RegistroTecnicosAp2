@@ -1,5 +1,6 @@
 package edu.ucne.registrotecnicos.presentation.cliente
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,6 +12,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -56,7 +59,13 @@ fun ClienteListBodyScreen(
     onDeleteCliente: (Int) -> Unit
 ) {
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(Color(0xFF0D47A1), Color(0xFF1976D2)) // Fondo azul
+                )
+            ),
         topBar = {
             MediumTopAppBar(
                 title = { Text("Clientes") },
@@ -73,10 +82,14 @@ fun ClienteListBodyScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = createCliente) {
-                Icon(Icons.Default.Add, contentDescription = "Agregar cliente")
+            FloatingActionButton(
+                onClick = createCliente,
+                containerColor = Color(0xFFD32F2F) // Rojo igual que en las OptionCard
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Agregar cliente", tint = Color.White)
             }
-        }
+        },
+        containerColor = Color.Transparent
     ) { innerPadding ->
         Column(
             modifier = Modifier
