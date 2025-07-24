@@ -4,11 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -39,7 +35,9 @@ fun ClienteListScreen(
 
     ClienteListBodyScreen(
         uiState = uiState,
-        onDrawer = { scope.launch { drawerState.open() } },
+        onDrawer = {
+            scope.launch { drawerState.open() }
+        },
         onRefresh = viewModel::getClientes,
         createCliente = createCliente,
         onEditCliente = onEditCliente,
@@ -85,6 +83,8 @@ fun ClienteListBodyScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
+            Spacer(modifier = Modifier.height(16.dp))
+
             if (uiState.isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
             }
