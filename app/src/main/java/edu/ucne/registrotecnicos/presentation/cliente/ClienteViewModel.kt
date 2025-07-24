@@ -20,6 +20,9 @@ class ClienteViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(ClienteUiState())
     val uiState = _uiState.asStateFlow()
+    private val _clienteGuardado = MutableStateFlow(false)
+    val clienteGuardado = _clienteGuardado.asStateFlow()
+
 
     init {
         getClientes()
@@ -59,11 +62,13 @@ class ClienteViewModel @Inject constructor(
                 clienteRepository.save(cliente)
                 getClientes()
                 limpiarCampos()
+                _clienteGuardado.value = true  // Marca como guardado
             } catch (e: Exception) {
                 _uiState.update { it.copy(errorMessage = e.message ?: "Error al guardar cliente") }
             }
         }
     }
+
 
     fun deleteCliente() {
         val currentState = _uiState.value
@@ -127,6 +132,10 @@ class ClienteViewModel @Inject constructor(
 
     fun setWhatsApp(value: String) {
         _uiState.update { it.copy(whatsApp = value) }
+    }
+
+    fun resetClienteGuardado() {
+        _clienteGuardado.value = false
     }
 
     fun limpiarCampos() {
