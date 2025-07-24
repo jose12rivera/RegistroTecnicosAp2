@@ -1,37 +1,61 @@
 package edu.ucne.registrotecnicos.data.repository
 
-
 import android.util.Log
+import edu.ucne.registrotecnicos.data.local.database.TecnicoDb
+import edu.ucne.registrotecnicos.data.local.entity.ClienteEntity
 import edu.ucne.registrotecnicos.data.remote.RemoteDataSource
 import edu.ucne.registrotecnicos.data.remote.Resource
-import edu.ucne.registrotecnicos.data.remote.dto.ClienteDto
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flow
-import retrofit2.HttpException
 import javax.inject.Inject
 
 class ClienteRepository @Inject constructor(
-    private val remoteDataSource: RemoteDataSource
+    private val remoteDataSource: RemoteDataSource,
+    private val db: TecnicoDb
 ) {
-    fun getClientes(): Flow<Resource<List<ClienteDto>>> = flow {
-        try {
-            emit(Resource.Loading())
-            val clientes = remoteDataSource.getClientes()
-            emit(Resource.Success(clientes))
-        } catch (e: HttpException) {
-            Log.e("Retrofit Error", "Error de conexión: ${e.message}", e)
-            emit(Resource.Error("Error de internet: ${e.message}"))
-        } catch (e: Exception) {
-            Log.e("Error desconocido", "Excepción: ${e.message}", e)
-            emit(Resource.Error("Unknown error: ${e.message}"))
-        }
+
+    suspend fun save(cliente: ClienteEntity) {
+        db.clienteDao().save(cliente)
     }
 
-    suspend fun getCliente(id: Int) = remoteDataSource.getCliente(id)
+    suspend fun find(id: Int): ClienteEntity? {
+        return db.clienteDao().find(id)
+    }
 
-    suspend fun createCliente(cliente: ClienteDto) = remoteDataSource.createCliente(cliente)
+    suspend fun delete(cliente: ClienteEntity) {
+        db.clienteDao().delete(cliente)
+    }
 
-    suspend fun updateCliente(cliente: ClienteDto) = remoteDataSource.updateCliente(cliente.clienteId, cliente)
+    fun getAll(): Flow<Resource<List<ClienteEntity>>> = flow {
+        emit(Resource.Loading())
 
-    suspend fun deleteCliente(id: Int) = remoteDataSource.deleteCliente(id)
+        try {
+            // Emitir datos locales primero (offline-first)
+            val localData = db.clienteDao().getAll().first()
+            emit(Resource.Success(localData))
+
+            // Obtener datos remotos
+            val remoteClientes = remoteDataSource.getClientes()
+
+            // Guardar/actualizar en local
+            remoteClientes.forEach {
+                db.clienteDao().save(
+                    ClienteEntity(
+                        clienteId = it.clienteId,
+                        nombres = it.nombres,
+                        whatsApp = it.whatsApp
+                    )
+                )
+            }
+
+            // Emitir datos actualizados desde local
+            val updatedData = db.clienteDao().getAll().first()
+            emit(Resource.Success(updatedData))
+
+        } catch (e: Exception) {
+            Log.e("ClienteRepository", "Error sincronizando datos", e)
+            emit(Resource.Error(e.message ?: "Error desconocido"))
+        }
+    }
 }
