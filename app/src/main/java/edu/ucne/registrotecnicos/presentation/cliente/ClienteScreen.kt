@@ -26,12 +26,21 @@ fun ClienteScreen(
     goBack: () -> Unit
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
+    val clienteGuardado = viewModel.clienteGuardado.collectAsStateWithLifecycle().value
 
     LaunchedEffect(clienteId) {
         if (clienteId != 0) {
             viewModel.selectCliente(clienteId)
         } else {
             viewModel.limpiarCampos()
+        }
+    }
+
+    // 👉 Navega atrás automáticamente si el cliente fue guardado
+    LaunchedEffect(clienteGuardado) {
+        if (clienteGuardado) {
+            viewModel.resetClienteGuardado()
+            goBack()
         }
     }
 
@@ -44,6 +53,7 @@ fun ClienteScreen(
         goBack = goBack
     )
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
