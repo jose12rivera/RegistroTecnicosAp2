@@ -3,6 +3,7 @@ package edu.ucne.registrotecnicos.data.repository
 import android.util.Log
 import edu.ucne.registrotecnicos.data.local.database.TecnicoDb
 import edu.ucne.registrotecnicos.data.local.entity.ClienteEntity
+import edu.ucne.registrotecnicos.data.local.entity.toDto
 import edu.ucne.registrotecnicos.data.remote.RemoteDataSource
 import edu.ucne.registrotecnicos.data.remote.Resource
 import kotlinx.coroutines.flow.Flow
@@ -16,29 +17,47 @@ class ClienteRepository @Inject constructor(
 ) {
 
     suspend fun save(cliente: ClienteEntity) {
+        try {
+            if (cliente.clienteId != null && cliente.clienteId != 0) {
+                remoteDataSource.updateCliente(cliente.clienteId!!, cliente.toDto())
+            } else {
+                val nuevo = remoteDataSource.createCliente(cliente.toDto())
+                cliente.clienteId = nuevo.clienteId
+            }
+        } catch (e: Exception) {
+            Log.e("ClienteRepository", "Error al sincronizar con API (save)", e)
+        }
+
         db.clienteDao().save(cliente)
+    }
+
+    suspend fun delete(cliente: ClienteEntity) {
+        try {
+            cliente.clienteId?.let {
+                remoteDataSource.deleteCliente(it)
+            }
+        } catch (e: Exception) {
+            Log.e("ClienteRepository", "Error al sincronizar con API (delete)", e)
+        }
+
+        db.clienteDao().delete(cliente)
     }
 
     suspend fun find(id: Int): ClienteEntity? {
         return db.clienteDao().find(id)
     }
 
-    suspend fun delete(cliente: ClienteEntity) {
-        db.clienteDao().delete(cliente)
-    }
-
     fun getAll(): Flow<Resource<List<ClienteEntity>>> = flow {
         emit(Resource.Loading())
 
         try {
-            // Emitir datos locales primero (offline-first)
+            // Emitir datos locales primero
             val localData = db.clienteDao().getAll().first()
             emit(Resource.Success(localData))
 
-            // Obtener datos remotos
+            // Obtener y guardar datos remotos
             val remoteClientes = remoteDataSource.getClientes()
 
-            // Guardar/actualizar en local
             remoteClientes.forEach {
                 db.clienteDao().save(
                     ClienteEntity(
@@ -49,10 +68,8 @@ class ClienteRepository @Inject constructor(
                 )
             }
 
-            // Emitir datos actualizados desde local
             val updatedData = db.clienteDao().getAll().first()
             emit(Resource.Success(updatedData))
-
         } catch (e: Exception) {
             Log.e("ClienteRepository", "Error sincronizando datos", e)
             emit(Resource.Error(e.message ?: "Error desconocido"))
