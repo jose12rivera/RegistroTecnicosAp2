@@ -7,6 +7,8 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import edu.ucne.composedemo.data.remote.MedicinasApi
+import edu.ucne.registrotecnicos.data.di.MoshiMedicinas
+import edu.ucne.registrotecnicos.data.di.OkHttpClientMedicinas
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -14,14 +16,17 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
-@InstallIn(SingletonComponent::class)
+
 @Module
+@InstallIn(SingletonComponent::class)
 object ApiModule {
+
     private const val BASE_URL = "http://registromedicina2025.somee.com/"
 
     @Provides
     @Singleton
-    fun provideMoshi(): Moshi =
+    @MoshiMedicinas
+    fun provideMoshiMedicinas(): Moshi =
         Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
             .add(DateAdapter())
@@ -29,21 +34,24 @@ object ApiModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(): OkHttpClient {
+    @OkHttpClientMedicinas
+    fun provideOkHttpClientMedicinas(): OkHttpClient {
         val loggingInterceptor = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
-
         return OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .readTimeout(30, TimeUnit.SECONDS)
+            .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+            .readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
             .build()
     }
 
     @Provides
     @Singleton
-    fun provideMedicinasApi(moshi: Moshi, client: OkHttpClient): MedicinasApi {
+    fun provideMedicinasApi(
+        @MoshiMedicinas moshi: Moshi,
+        @OkHttpClientMedicinas client: OkHttpClient
+    ): MedicinasApi {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(client)
@@ -52,3 +60,4 @@ object ApiModule {
             .create(MedicinasApi::class.java)
     }
 }
+
