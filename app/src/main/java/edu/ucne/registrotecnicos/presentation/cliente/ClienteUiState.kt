@@ -1,6 +1,6 @@
 package edu.ucne.registrotecnicos.presentation.cliente
 
-import edu.ucne.registrotecnicos.data.remote.dto.ClienteDto
+import edu.ucne.registrotecnicos.data.local.entity.ClienteEntity
 
 data class ClienteUiState(
     val clienteId: Int? = null,
@@ -8,6 +8,6 @@ data class ClienteUiState(
     val whatsApp: String? = null,
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
-    val clientes: List<ClienteDto> = emptyList(),
+    val clientes: List<ClienteEntity> = emptyList(),
     val inputError: String? = null
 )
