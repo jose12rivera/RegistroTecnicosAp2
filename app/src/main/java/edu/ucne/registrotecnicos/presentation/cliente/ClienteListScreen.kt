@@ -1,11 +1,12 @@
 package edu.ucne.registrotecnicos.presentation.cliente
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
@@ -18,12 +19,17 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import edu.ucne.registrotecnicos.data.local.entity.ClienteEntity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun ClienteListScreen(
     viewModel: ClienteViewModel = hiltViewModel(),
-    goToCliente: (Int) -> Unit,
-    onDrawer: () -> Unit
+    drawerState: DrawerState,
+    scope: CoroutineScope,
+    createCliente: () -> Unit,
+    onEditCliente: (Int) -> Unit,
+    onDeleteCliente: (Int) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -33,9 +39,11 @@ fun ClienteListScreen(
 
     ClienteListBodyScreen(
         uiState = uiState,
-        goToCliente = goToCliente,
-        onDrawer = onDrawer,
-        onRefresh = viewModel::getClientes
+        onDrawer = { scope.launch { drawerState.open() } },
+        onRefresh = viewModel::getClientes,
+        createCliente = createCliente,
+        onEditCliente = onEditCliente,
+        onDeleteCliente = onDeleteCliente
     )
 }
 
@@ -43,9 +51,11 @@ fun ClienteListScreen(
 @Composable
 fun ClienteListBodyScreen(
     uiState: ClienteUiState,
-    goToCliente: (Int) -> Unit,
     onDrawer: () -> Unit,
     onRefresh: () -> Unit,
+    createCliente: () -> Unit,
+    onEditCliente: (Int) -> Unit,
+    onDeleteCliente: (Int) -> Unit
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -56,20 +66,17 @@ fun ClienteListBodyScreen(
                     IconButton(onClick = onDrawer) {
                         Icon(Icons.Default.Menu, contentDescription = "Abrir menú")
                     }
+                },
+                actions = {
+                    IconButton(onClick = onRefresh) {
+                        Icon(Icons.Default.Refresh, contentDescription = "Refrescar")
+                    }
                 }
             )
         },
         floatingActionButton = {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier.padding(end = 16.dp)
-            ) {
-                FloatingActionButton(onClick = onRefresh) {
-                    Icon(Icons.Default.Refresh, contentDescription = "Refrescar")
-                }
-                FloatingActionButton(onClick = { goToCliente(0) }) { // 0 indica NUEVO
-                    Icon(Icons.Default.Add, contentDescription = "Agregar cliente")
-                }
+            FloatingActionButton(onClick = createCliente) {
+                Icon(Icons.Default.Add, contentDescription = "Agregar cliente")
             }
         }
     ) { innerPadding ->
@@ -78,8 +85,6 @@ fun ClienteListBodyScreen(
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            Spacer(modifier = Modifier.height(32.dp))
-
             if (uiState.isLoading) {
                 CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
             }
@@ -94,7 +99,7 @@ fun ClienteListBodyScreen(
 
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 items(uiState.clientes) { cliente ->
-                    ClienteRow(cliente, goToCliente)
+                    ClienteRow(cliente, onEditCliente, onDeleteCliente)
                 }
             }
         }
@@ -104,17 +109,30 @@ fun ClienteListBodyScreen(
 @Composable
 private fun ClienteRow(
     item: ClienteEntity,
-    goToCliente: (Int) -> Unit,
+    onEditCliente: (Int) -> Unit,
+    onDeleteCliente: (Int) -> Unit
 ) {
-    Column(
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { goToCliente(item.clienteId ?: 0) }
-            .padding(16.dp)
+            .padding(16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = "ID: ${item.clienteId ?: "-"}")
-        Text(text = "Nombre: ${item.nombres}")
-        Text(text = "WhatsApp: ${item.whatsApp}")
+        Column(modifier = Modifier.weight(1f)) {
+            Text(text = "ID: ${item.clienteId ?: "-"}")
+            Text(text = "Nombre: ${item.nombres}")
+            Text(text = "WhatsApp: ${item.whatsApp}")
+        }
+
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            IconButton(onClick = { onEditCliente(item.clienteId ?: 0) }) {
+                Icon(Icons.Default.Edit, contentDescription = "Editar")
+            }
+            IconButton(onClick = { onDeleteCliente(item.clienteId ?: 0) }) {
+                Icon(Icons.Default.Delete, contentDescription = "Eliminar")
+            }
+        }
     }
     Divider()
 }
