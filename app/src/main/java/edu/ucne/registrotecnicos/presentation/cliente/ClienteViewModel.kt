@@ -3,8 +3,8 @@ package edu.ucne.registrotecnicos.presentation.cliente
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edu.ucne.registrotecnicos.data.local.entity.ClienteEntity
 import edu.ucne.registrotecnicos.data.remote.Resource
-import edu.ucne.registrotecnicos.data.remote.dto.ClienteDto
 import edu.ucne.registrotecnicos.data.repository.ClienteRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -45,78 +45,75 @@ class ClienteViewModel @Inject constructor(
         }
     }
 
-    fun create() {
-        val currentState = _uiState.value
+    fun saveCliente() {
         if (!validarCampos()) return
 
+        val currentState = _uiState.value
         viewModelScope.launch {
             try {
-                clienteRepository.createCliente(
-                    ClienteDto(
-                        clienteId = 0,
-                        nombres = currentState.nombres.orEmpty(),
-                        whatsApp = currentState.whatsApp.orEmpty()
-                    )
+                val cliente = ClienteEntity(
+                    clienteId = currentState.clienteId,
+                    nombres = currentState.nombres.orEmpty(),
+                    whatsApp = currentState.whatsApp.orEmpty()
                 )
+                clienteRepository.save(cliente)
                 limpiarCampos()
-                getClientes()
             } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(errorMessage = e.localizedMessage ?: "Error al guardar")
-                }
+                _uiState.update { it.copy(errorMessage = e.message ?: "Error al guardar cliente") }
             }
         }
     }
 
-    fun update() {
+    fun deleteCliente() {
         val currentState = _uiState.value
-        if (!validarCampos()) return
-
         viewModelScope.launch {
             try {
-                clienteRepository.updateCliente(
-                    ClienteDto(
-                        clienteId = currentState.clienteId ?: 0,
-                        nombres = currentState.nombres.orEmpty(),
-                        whatsApp = currentState.whatsApp.orEmpty()
-                    )
+                val cliente = ClienteEntity(
+                    clienteId = currentState.clienteId,
+                    nombres = currentState.nombres.orEmpty(),
+                    whatsApp = currentState.whatsApp.orEmpty()
                 )
+                clienteRepository.delete(cliente)
                 limpiarCampos()
-                getClientes()
             } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(errorMessage = e.localizedMessage ?: "Error al actualizar")
-                }
+                _uiState.update { it.copy(errorMessage = e.message ?: "Error al eliminar cliente") }
             }
         }
     }
 
     fun getClientes() {
         viewModelScope.launch {
-            clienteRepository.getClientes().collectLatest { result ->
+            clienteRepository.getAll().collectLatest { result ->
                 when (result) {
-                    is Resource.Loading -> {
-                        _uiState.update {
-                            it.copy(isLoading = true, errorMessage = null)
-                        }
+                    is Resource.Loading -> _uiState.update { it.copy(isLoading = true, errorMessage = null) }
+                    is Resource.Success -> _uiState.update {
+                        it.copy(
+                            clientes = result.data ?: emptyList(),
+                            isLoading = false,
+                            errorMessage = null
+                        )
                     }
-                    is Resource.Success -> {
-                        _uiState.update {
-                            it.copy(
-                                clientes = result.data ?: emptyList(),
-                                isLoading = false,
-                                errorMessage = null
-                            )
-                        }
+                    is Resource.Error -> _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            errorMessage = result.message ?: "Error desconocido"
+                        )
                     }
-                    is Resource.Error -> {
-                        _uiState.update {
-                            it.copy(
-                                errorMessage = result.message ?: "Error desconocido",
-                                isLoading = false
-                            )
-                        }
-                    }
+                }
+            }
+        }
+    }
+
+    fun selectCliente(id: Int) {
+        viewModelScope.launch {
+            val cliente = clienteRepository.find(id)
+            cliente?.let {
+                _uiState.update {
+                    it.copy(
+                        clienteId = cliente.clienteId,
+                        nombres = cliente.nombres,
+                        whatsApp = cliente.whatsApp
+                    )
                 }
             }
         }
@@ -130,17 +127,14 @@ class ClienteViewModel @Inject constructor(
         _uiState.update { it.copy(whatsApp = value) }
     }
 
-    fun setClienteId(id: Int) {
-        _uiState.update { it.copy(clienteId = id) }
-    }
-
     fun limpiarCampos() {
         _uiState.update {
             it.copy(
                 clienteId = null,
                 nombres = null,
                 whatsApp = null,
-                inputError = null
+                inputError = null,
+                errorMessage = null
             )
         }
     }
