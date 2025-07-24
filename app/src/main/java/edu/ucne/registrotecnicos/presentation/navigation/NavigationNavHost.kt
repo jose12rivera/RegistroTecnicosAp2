@@ -18,6 +18,7 @@ import androidx.navigation.toRoute
 import edu.ucne.registrotecnicos.data.local.database.TecnicoDb
 import edu.ucne.registrotecnicos.presentation.HomeScreen
 import edu.ucne.registrotecnicos.presentation.cliente.ClienteListScreen
+import edu.ucne.registrotecnicos.presentation.cliente.ClienteScreen
 import edu.ucne.registrotecnicos.presentation.medicina.MedicinaListScreen
 import edu.ucne.registrotecnicos.presentation.medicina.MedicinaScreen
 import edu.ucne.registrotecnicos.presentation.mensaje.MensajeScreen
@@ -204,6 +205,14 @@ fun registro_tecnicos_tickets(tecnicoDb: TecnicoDb, navHostController: NavHostCo
                 }
             )
         }
+        composable<Screen.Cliente> { backStackEntry ->
+            val args = backStackEntry.toRoute<Screen.Cliente>()
+            ClienteScreen(
+                clienteId = args.clienteId,
+                goBack = { navHostController.popBackStack() }
+            )
+        }
+
 //        composable<Screen.Cliente> { backStackEntry ->
 //            val args = backStackEntry.toRoute<Screen.Cliente>()
 //            ClienteScreen(
