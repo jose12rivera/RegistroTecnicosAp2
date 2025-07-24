@@ -57,6 +57,7 @@ class ClienteViewModel @Inject constructor(
                     whatsApp = currentState.whatsApp.orEmpty()
                 )
                 clienteRepository.save(cliente)
+                getClientes()
                 limpiarCampos()
             } catch (e: Exception) {
                 _uiState.update { it.copy(errorMessage = e.message ?: "Error al guardar cliente") }
@@ -74,6 +75,7 @@ class ClienteViewModel @Inject constructor(
                     whatsApp = currentState.whatsApp.orEmpty()
                 )
                 clienteRepository.delete(cliente)
+                getClientes()
                 limpiarCampos()
             } catch (e: Exception) {
                 _uiState.update { it.copy(errorMessage = e.message ?: "Error al eliminar cliente") }
